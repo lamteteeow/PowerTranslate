@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "PowerTranslateExtension (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "PowerTranslateExtension (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
