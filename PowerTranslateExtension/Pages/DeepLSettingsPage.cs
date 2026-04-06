@@ -31,6 +31,27 @@ internal sealed partial class DeepLSettingsPage : ContentPage
         var candidateKey = (rawValue ?? string.Empty).Trim();
         var previousKey = _settingsStore.GetDeepLApiKey();
 
+        if (string.IsNullOrWhiteSpace(candidateKey))
+        {
+            if (!string.IsNullOrWhiteSpace(previousKey))
+            {
+                _translator.ReloadSupportedLanguageChoices();
+                UpdateStatusBody("Using previously saved API key. Settings unchanged.");
+                return CommandResult.ShowToast(new ToastArgs
+                {
+                    Message = "Using previously saved API key.",
+                    Result = CommandResult.KeepOpen(),
+                });
+            }
+
+            UpdateStatusBody("API key is not set.");
+            return CommandResult.ShowToast(new ToastArgs
+            {
+                Message = "API key is not set.",
+                Result = CommandResult.KeepOpen(),
+            });
+        }
+
         _settingsStore.SaveDeepLApiKey(candidateKey);
 
         if (!string.IsNullOrWhiteSpace(candidateKey))
@@ -77,7 +98,8 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     {
         var maskedCurrentKey = MaskKey(_settingsStore.GetDeepLApiKey());
         var maskedLine = string.IsNullOrEmpty(maskedCurrentKey) ? "Not set" : maskedCurrentKey;
-        _statusContent.Body = $"Current API key: {maskedLine}\n\n{message}";
+        _statusContent.Body =
+            $"Current API key: {maskedLine}\n\n{message}\n\nTip: After setting the API key, reload Command Palette extensions to refresh language choices.";
         RaiseItemsChanged(1);
     }
 
@@ -111,8 +133,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
       "placeholder": "Paste DeepL API key",
       "style": "password",
       "isMultiline": false,
-      "isRequired": true,
-      "errorMessage": "API key is required"
+            "isRequired": false
     }
   ],
   "actions": [

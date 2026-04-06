@@ -21,7 +21,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
     private CancellationTokenSource? _debounceCts;
     private string _searchText = string.Empty;
     private string _resultTitle = string.Empty;
-    private string _resultBody = "Type or paste text in the search box. Translation happens automatically after you pause typing.";
+    private string _resultBody = "Type or paste text in the search box. Translation happens automatically after you pause typing.\n\nTip: First configure your DeepL API key, then reload Command Palette extensions.";
     private int _translationGeneration;
 
     public PowerTranslateExtensionPage()
@@ -115,7 +115,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
         if (string.IsNullOrWhiteSpace(trimmedInput))
         {
             _resultTitle = string.Empty;
-            _resultBody = "Type or paste text in the search box. Translation happens automatically after you pause typing.";
+            _resultBody = "Type or paste text in the search box. Translation happens automatically after you pause typing.\n\nTip: First configure your DeepL API key, then reload Command Palette extensions.";
             RaiseItemsChanged(1);
             return;
         }
@@ -193,9 +193,22 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
         var selected = choices.FirstOrDefault(choice =>
             string.Equals(choice.Value, selectedCode, StringComparison.OrdinalIgnoreCase));
 
-        return selected is null || string.IsNullOrWhiteSpace(selected.Title)
-            ? selectedCode
-            : $"{selected.Title} ({selectedCode})";
+        if (selected is null || string.IsNullOrWhiteSpace(selected.Title))
+        {
+            return selectedCode;
+        }
+
+        if (string.Equals(selected.Title, selectedCode, StringComparison.OrdinalIgnoreCase))
+        {
+            return selected.Title;
+        }
+
+        if (string.Equals(selectedCode, "AUTO", StringComparison.OrdinalIgnoreCase))
+        {
+            return selected.Title;
+        }
+
+        return $"{selected.Title} ({selectedCode})";
     }
 
     private LanguageSelectionPage CreateSourceLanguagePage(IEnumerable<ChoiceSetSetting.Choice> choices, string selectedLanguage)

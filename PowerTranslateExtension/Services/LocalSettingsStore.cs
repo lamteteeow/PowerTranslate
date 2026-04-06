@@ -84,7 +84,7 @@ internal sealed class LocalSettingsStore
         SaveLanguage(_targetLanguagePath, languageCode, DefaultTargetLanguage, allowAuto: false);
     }
 
-    private string ReadLanguageOrDefault(string path, string fallback, bool allowAuto)
+    private static string ReadLanguageOrDefault(string path, string fallback, bool allowAuto)
     {
         try
         {
