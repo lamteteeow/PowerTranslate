@@ -152,27 +152,65 @@ internal sealed class DeepLTranslator
 
             if (!response.IsSuccessStatusCode)
             {
-                return new TranslationResult(false, $"DeepL request failed ({(int)response.StatusCode}): {responseText}");
+                return GetFriendlyErrorMessage(response.StatusCode, responseText);
             }
 
             using var json = JsonDocument.Parse(responseText);
             if (!json.RootElement.TryGetProperty("translations", out var translations) || translations.GetArrayLength() == 0)
             {
-                return new TranslationResult(false, "DeepL returned an unexpected response.");
+                return new TranslationResult(false, "DeepL returned an unexpected response. Try again or check your API key.");
             }
 
-            var translatedText = translations[0].GetProperty("text").GetString();
+            var translation = translations[0];
+            var translatedText = translation.GetProperty("text").GetString();
             if (string.IsNullOrWhiteSpace(translatedText))
             {
-                return new TranslationResult(false, "DeepL returned an empty translation.");
+                return new TranslationResult(false, "DeepL returned an empty translation. Try with different text.");
             }
 
-            return new TranslationResult(true, translatedText);
+            var detectedSource = translation.TryGetProperty("detected_source_language", out var detectedNode)
+                ? NormalizeLanguageCode(detectedNode.GetString() ?? source)
+                : source;
+
+            var sourceForDisplay = string.Equals(source, "AUTO", StringComparison.Ordinal)
+                ? detectedSource
+                : source;
+
+            return new TranslationResult(true, translatedText, sourceForDisplay, target);
+        }
+        catch (HttpRequestException ex)
+        {
+            return new TranslationResult(false, $"Network error: Check your internet connection. ({ex.Message})");
+        }
+        catch (OperationCanceledException)
+        {
+            return new TranslationResult(false, "Request timed out. DeepL server may be slow or unreachable.");
+        }
+        catch (JsonException)
+        {
+            return new TranslationResult(false, "DeepL returned invalid data. Try again in a moment.");
         }
         catch (Exception ex)
         {
-            return new TranslationResult(false, $"DeepL error: {ex.Message}");
+            return new TranslationResult(false, $"Unexpected error: {ex.Message}");
         }
+    }
+
+    private static TranslationResult GetFriendlyErrorMessage(System.Net.HttpStatusCode statusCode, string responseText)
+    {
+        return statusCode switch
+        {
+            System.Net.HttpStatusCode.Unauthorized or System.Net.HttpStatusCode.Forbidden =>
+                new TranslationResult(false, "Invalid DeepL API key. Check your credentials in 'Configure DeepL API key'."),
+            System.Net.HttpStatusCode.TooManyRequests =>
+                new TranslationResult(false, "DeepL request limit exceeded. Please wait a moment and try again."),
+            System.Net.HttpStatusCode.BadRequest =>
+                new TranslationResult(false, "Invalid request to DeepL. Check your language selection and try again."),
+            System.Net.HttpStatusCode.ServiceUnavailable =>
+                new TranslationResult(false, "DeepL service is temporarily unavailable. Try again in a moment."),
+            _ =>
+                new TranslationResult(false, $"DeepL error ({(int)statusCode}). If this persists, check your API key.")
+        };
     }
 
     public TranslationResult CheckConnection()
@@ -195,7 +233,7 @@ internal sealed class DeepLTranslator
 
             if (!response.IsSuccessStatusCode)
             {
-                return new TranslationResult(false, $"Diagnostic failed ({(int)response.StatusCode}): {responseText}");
+                return GetFriendlyErrorMessage(response.StatusCode, responseText);
             }
 
             using var json = JsonDocument.Parse(responseText);
@@ -208,9 +246,21 @@ internal sealed class DeepLTranslator
 
             return new TranslationResult(true, "DeepL connection OK.");
         }
+        catch (HttpRequestException ex)
+        {
+            return new TranslationResult(false, $"Network error: Check your internet connection. ({ex.Message})");
+        }
+        catch (OperationCanceledException)
+        {
+            return new TranslationResult(false, "Request timed out. DeepL server may be unreachable.");
+        }
+        catch (JsonException)
+        {
+            return new TranslationResult(false, "DeepL returned invalid data.");
+        }
         catch (Exception ex)
         {
-            return new TranslationResult(false, $"DeepL diagnostic error: {ex.Message}");
+            return new TranslationResult(false, $"Unexpected error: {ex.Message}");
         }
     }
 
@@ -285,5 +335,5 @@ internal sealed class DeepLTranslator
     }
 }
 
-internal readonly record struct TranslationResult(bool IsSuccess, string Message);
+internal readonly record struct TranslationResult(bool IsSuccess, string Message, string? SourceLanguage = null, string? TargetLanguage = null);
 internal readonly record struct DeepLLanguage(string Code, string Name);
