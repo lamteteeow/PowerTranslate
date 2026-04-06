@@ -2,37 +2,37 @@
 
 ## Phase 1: Version & Packaging (CRITICAL)
 
-- [ ] Update version to 1.0.0.0 in Package.appxmanifest
-- [ ] Update version in PowerTranslateExtension.csproj AssemblyVersion
+- [x] Update version to 1.0.0.0 in Package.appxmanifest
+- [x] Update version in PowerTranslateExtension.csproj AssemblyVersion
 - [ ] Update PublisherDisplayName if needed (currently "Lam Tran")
 - **Commit**: "chore: bump version to 1.0.0.0 release"
 
 ## Phase 2: Documentation
 
-- [ ] Add "Requirements" section to README.md
+- [x] Add "Requirements" section to README.md
   - Windows 10 Build 19041 or later
   - PowerToys with Command Palette
   - DeepL API key (free or paid)
-- [ ] Add "Installation" section with Microsoft Store link placeholder
-- [ ] Add "Troubleshooting" section with cache location
-- [ ] Add "Privacy" section explaining API communication and encryption
-- [ ] Update CONTRIBUTING.md with code quality standards
+- [x] Add "Installation" section with Microsoft Store link placeholder
+- [x] Add "Troubleshooting" section with cache location
+- [x] Add "Privacy" section explaining API communication and encryption
+- [x] Update CONTRIBUTING.md with code quality standards
 - **Commit**: "docs: add requirements, installation, troubleshooting, and privacy sections"
 
 ## Phase 3: Code Quality & Security
 
-- [ ] Review error handling in DeepLTranslator.cs (network failures, invalid responses)
-- [ ] Add user-friendly error messages for common failures
-- [ ] Verify API key is never logged or exposed
-- [ ] Add try-catch blocks where missing
+- [x] Review error handling in DeepLTranslator.cs (network failures, invalid responses)
+- [x] Add user-friendly error messages for common failures
+- [x] Verify API key is never logged or exposed
+- [x] Add try-catch blocks where missing
 - [ ] Test with expired/invalid API keys
 - **Commit**: "refactor: improve error handling and user-facing messages"
 
 ## Phase 4: Assets & Branding
 
-- [ ] Keep `PowerTranslateExtension/Assets/PowerTranslateLogo.png` as the only trusted final branding asset
-- [ ] Treat every other image under `PowerTranslateExtension/Assets/` as placeholder until explicitly replaced
-- [ ] Do placeholder handling by file path only (no image-content review):
+- [x] Keep `PowerTranslateExtension/Assets/PowerTranslateLogo.png` as the only trusted final branding asset
+- [x] Treat every other image under `PowerTranslateExtension/Assets/` as placeholder until explicitly replaced
+- [x] Do placeholder handling by file path only (no image-content review):
   - `LockScreenLogo.scale-200.png`
   - `Square150x150Logo.scale-200.png`
   - `SplashScreen.scale-200.png`
