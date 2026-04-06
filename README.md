@@ -123,6 +123,32 @@ See [PRIVACY.md](PRIVACY.md) for the formal policy used for release and store su
 - No third-party tracking
 - Users have full control over API key and language settings
 
+## Microsoft Store Submission Copy
+
+### Concise Description (50 words)
+PowerTranslate brings DeepL-powered translation directly into PowerToys Command Palette. Translate text instantly with automatic source detection, flexible source/target language selection, and encrypted local API key storage. Built for speed, privacy, and daily workflow efficiency on Windows 10 and Windows 11.
+
+### Detailed Description
+PowerTranslate is a productivity-focused translation extension for Microsoft PowerToys Command Palette. It allows you to translate text without leaving your keyboard-driven workflow. Choose source and target languages, or enable AUTO source detection to let DeepL identify input language automatically.
+
+The extension includes encrypted local storage for your DeepL API key using Windows Data Protection API, plus persistent language preferences so your most-used settings are ready every session. It is designed to be lightweight, responsive, and practical for developers, writers, support teams, and multilingual users.
+
+Key benefits include:
+- Fast translation from Command Palette
+- 30+ supported language pairs through DeepL
+- On-the-fly source/target switching
+- Clear source to target indicator in translation results
+- No telemetry, no analytics, and no third-party tracking
+
+PowerTranslate communicates only with DeepL for translation requests and stores only what is needed for operation. This makes it a focused utility for users who want high-quality translation with minimal friction and strong privacy defaults.
+
+### Suggested Store Categories and Tags
+- Categories: Productivity, Utilities
+- Tags: translation, language, deepl, command palette, powertoys
+
+### Support Contact
+- GitHub Issues: https://github.com/<your-org-or-user>/PowerTranslateExtension/issues
+
 ## Development Status
 
 **Status**: Stable v1.0.0 release
