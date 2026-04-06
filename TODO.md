@@ -70,10 +70,10 @@
 
 ## Phase 7: Code Signing Preparation
 
-- [ ] Research certificate options for MSIX signing
+- [x] Research certificate options for MSIX signing
   - Self-signed (for testing)
   - Commercial certificate (for Store)
-- [ ] Document signing process in CONTRIBUTING.md
+- [x] Document signing process in CONTRIBUTING.md
 - [ ] Create pre-build signing script (optional)
 - **Commit**: "chore: add code signing documentation"
 

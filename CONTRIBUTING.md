@@ -48,6 +48,20 @@ Before opening a pull request:
 - Treat all translation text as potentially sensitive user data.
 - Keep data handling aligned with the privacy section in `README.md`.
 
+## MSIX Signing Notes
+
+For Microsoft Store submission, package signing is handled by Microsoft during ingestion. For local testing or sideloading, use one of these options:
+
+1. Self-signed certificate (development/testing only).
+2. Commercial code-signing certificate (non-Store enterprise distribution).
+
+Recommended workflow:
+
+1. Build package with the publish profile (`win-x64` or `win-arm64`).
+2. If sideloading outside Store, sign the package with your trusted certificate.
+3. Validate installation on a clean machine profile.
+4. Keep certificate material out of source control.
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the MIT License used by this project.
