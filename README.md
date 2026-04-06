@@ -101,6 +101,8 @@ PowerTranslateExtension/
 
 ## Privacy
 
+See [PRIVACY.md](PRIVACY.md) for the formal policy used for release and store submission.
+
 ### Data Handling
 - **Translation requests**: Sent to DeepL API servers over HTTPS
 - **API key**: Stored locally and encrypted using Windows Data Protection API

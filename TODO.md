@@ -60,8 +60,8 @@
 
 ## Phase 6: Create Privacy Policy
 
-- [ ] Create PRIVACY.md or host privacy policy URL
-- [ ] Document:
+- [x] Create PRIVACY.md or host privacy policy URL
+- [x] Document:
   - Data sent to DeepL (text to translate)
   - Data stored locally (encrypted API key, language preferences)
   - No telemetry or tracking
