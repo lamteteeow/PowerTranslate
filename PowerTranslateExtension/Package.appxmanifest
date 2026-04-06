@@ -11,7 +11,7 @@
   <Identity
     Name="PowerTranslateExtension"
     Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
-    Version="0.0.6.3" />
+    Version="0.0.6.4" />
 
   <Properties>
     <DisplayName>Power Translate</DisplayName>

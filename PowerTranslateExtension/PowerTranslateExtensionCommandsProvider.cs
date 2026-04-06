@@ -26,17 +26,10 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
         var targetLanguage = settingsStore.GetTargetLanguage();
         var (sourceLanguageChoices, targetLanguageChoices) = translator.GetSupportedLanguageChoices();
 
+        EnsureChoicePresent(sourceLanguageChoices, sourceLanguage);
+        EnsureChoicePresent(targetLanguageChoices, targetLanguage);
+
         var hasLanguageChoices = sourceLanguageChoices.Count > 0 && targetLanguageChoices.Count > 0;
-
-        if (hasLanguageChoices && !sourceLanguageChoices.Any(c => string.Equals(c.Value, sourceLanguage, StringComparison.Ordinal)))
-        {
-            sourceLanguage = sourceLanguageChoices[0].Value;
-        }
-
-        if (hasLanguageChoices && !targetLanguageChoices.Any(c => string.Equals(c.Value, targetLanguage, StringComparison.Ordinal)))
-        {
-            targetLanguage = targetLanguageChoices[0].Value;
-        }
 
         if (hasLanguageChoices)
         {
@@ -95,6 +88,23 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
     public override ICommandItem[] TopLevelCommands()
     {
         return _commands;
+    }
+
+    private static void EnsureChoicePresent(List<ChoiceSetSetting.Choice> choices, string selectedValue)
+    {
+        if (choices.Any(choice => string.Equals(choice.Value, selectedValue, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        var displayTitle = selectedValue switch
+        {
+            "AUTO" => "Auto",
+            "EN" => "English",
+            _ => selectedValue,
+        };
+
+        choices.Insert(0, new ChoiceSetSetting.Choice(displayTitle, selectedValue));
     }
 
 }

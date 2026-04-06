@@ -13,6 +13,11 @@ internal sealed class LocalSettingsStore
     private const string DefaultSourceLanguage = "AUTO";
     private const string DefaultTargetLanguage = "EN";
 
+    private static readonly object CacheLock = new();
+    private static bool _languageCacheInitialized;
+    private static string _sourceLanguage = DefaultSourceLanguage;
+    private static string _targetLanguage = DefaultTargetLanguage;
+
     private readonly string _settingsDirectory;
     private readonly string _apiKeyPath;
     private readonly string _sourceLanguagePath;
@@ -24,6 +29,8 @@ internal sealed class LocalSettingsStore
         _apiKeyPath = Path.Combine(_settingsDirectory, ApiKeyFileName);
         _sourceLanguagePath = Path.Combine(_settingsDirectory, SourceLanguageFileName);
         _targetLanguagePath = Path.Combine(_settingsDirectory, TargetLanguageFileName);
+
+        EnsureLanguageCacheInitialized();
     }
 
     public string? GetDeepLApiKey()
@@ -66,22 +73,59 @@ internal sealed class LocalSettingsStore
 
     public string GetSourceLanguage()
     {
-        return ReadLanguageOrDefault(_sourceLanguagePath, DefaultSourceLanguage, allowAuto: true);
+        lock (CacheLock)
+        {
+            return _sourceLanguage;
+        }
     }
 
     public string GetTargetLanguage()
     {
-        return ReadLanguageOrDefault(_targetLanguagePath, DefaultTargetLanguage, allowAuto: false);
+        lock (CacheLock)
+        {
+            return _targetLanguage;
+        }
     }
 
     public void SaveSourceLanguage(string? languageCode)
     {
-        SaveLanguage(_sourceLanguagePath, languageCode, DefaultSourceLanguage, allowAuto: true);
+        lock (CacheLock)
+        {
+            _sourceLanguage = SaveLanguage(_settingsDirectory, _sourceLanguagePath, languageCode, DefaultSourceLanguage, allowAuto: true);
+        }
     }
 
     public void SaveTargetLanguage(string? languageCode)
     {
-        SaveLanguage(_targetLanguagePath, languageCode, DefaultTargetLanguage, allowAuto: false);
+        lock (CacheLock)
+        {
+            _targetLanguage = SaveLanguage(_settingsDirectory, _targetLanguagePath, languageCode, DefaultTargetLanguage, allowAuto: false);
+        }
+    }
+
+    public void ReloadLanguages()
+    {
+        lock (CacheLock)
+        {
+            _sourceLanguage = ReadLanguageOrDefault(_sourceLanguagePath, DefaultSourceLanguage, allowAuto: true);
+            _targetLanguage = ReadLanguageOrDefault(_targetLanguagePath, DefaultTargetLanguage, allowAuto: false);
+            _languageCacheInitialized = true;
+        }
+    }
+
+    private void EnsureLanguageCacheInitialized()
+    {
+        lock (CacheLock)
+        {
+            if (_languageCacheInitialized)
+            {
+                return;
+            }
+
+            _sourceLanguage = ReadLanguageOrDefault(_sourceLanguagePath, DefaultSourceLanguage, allowAuto: true);
+            _targetLanguage = ReadLanguageOrDefault(_targetLanguagePath, DefaultTargetLanguage, allowAuto: false);
+            _languageCacheInitialized = true;
+        }
     }
 
     private static string ReadLanguageOrDefault(string path, string fallback, bool allowAuto)
@@ -102,9 +146,9 @@ internal sealed class LocalSettingsStore
         }
     }
 
-    private void SaveLanguage(string path, string? languageCode, string fallback, bool allowAuto)
+    private static string SaveLanguage(string settingsDirectory, string path, string? languageCode, string fallback, bool allowAuto)
     {
-        Directory.CreateDirectory(_settingsDirectory);
+        Directory.CreateDirectory(settingsDirectory);
 
         var normalized = NormalizeLanguageCode(languageCode);
         if (!IsSupportedLanguage(normalized, allowAuto))
@@ -113,6 +157,7 @@ internal sealed class LocalSettingsStore
         }
 
         File.WriteAllText(path, normalized);
+        return normalized;
     }
 
     private static string NormalizeLanguageCode(string? languageCode)
