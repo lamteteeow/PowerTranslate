@@ -11,6 +11,7 @@
 *.sln.docstates
 *.env
 .local/
+[Tt]odo.md
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

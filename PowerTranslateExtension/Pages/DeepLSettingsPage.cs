@@ -16,7 +16,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     {
         _translator = new DeepLTranslator(_settingsStore);
         _form = new ApiKeyForm(this);
-        Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        Icon = IconHelpers.FromRelativePath("Assets\\PowerTranslateLogo.png");
         Title = "DeepL Settings";
         UpdateStatusBody("Enter API key and select Save.");
     }
@@ -47,6 +47,8 @@ internal sealed partial class DeepLSettingsPage : ContentPage
                 });
             }
 
+            _translator.ReloadSupportedLanguageChoices();
+
             UpdateStatusBody("API is valid. Settings saved.");
             return CommandResult.ShowToast(new ToastArgs
             {
@@ -66,6 +68,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     private CommandResult ClearApiKey()
     {
         _settingsStore.SaveDeepLApiKey(null);
+        _translator.ReloadSupportedLanguageChoices();
         UpdateStatusBody("API key cleared.");
         return CommandResult.ShowToast(new ToastArgs { Message = "Settings saved.", Result = CommandResult.KeepOpen() });
     }

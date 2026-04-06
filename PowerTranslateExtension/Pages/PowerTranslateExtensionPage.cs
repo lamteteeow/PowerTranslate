@@ -25,7 +25,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
     public PowerTranslateExtensionPage()
     {
         _translator = new DeepLTranslator(_settingsStore);
-        Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        Icon = IconHelpers.FromRelativePath("Assets\\PowerTranslateLogo.png");
         Title = "PowerTranslate";
         PlaceholderText = "Type or paste text to translate";
         ShowDetails = true;

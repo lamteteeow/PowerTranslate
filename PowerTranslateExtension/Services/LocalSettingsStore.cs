@@ -66,25 +66,25 @@ internal sealed class LocalSettingsStore
 
     public string GetSourceLanguage()
     {
-        return ReadLanguageOrDefault(_sourceLanguagePath, DefaultSourceLanguage);
+        return ReadLanguageOrDefault(_sourceLanguagePath, DefaultSourceLanguage, allowAuto: true);
     }
 
     public string GetTargetLanguage()
     {
-        return ReadLanguageOrDefault(_targetLanguagePath, DefaultTargetLanguage);
+        return ReadLanguageOrDefault(_targetLanguagePath, DefaultTargetLanguage, allowAuto: false);
     }
 
     public void SaveSourceLanguage(string? languageCode)
     {
-        SaveLanguage(_sourceLanguagePath, languageCode, DefaultSourceLanguage);
+        SaveLanguage(_sourceLanguagePath, languageCode, DefaultSourceLanguage, allowAuto: true);
     }
 
     public void SaveTargetLanguage(string? languageCode)
     {
-        SaveLanguage(_targetLanguagePath, languageCode, DefaultTargetLanguage);
+        SaveLanguage(_targetLanguagePath, languageCode, DefaultTargetLanguage, allowAuto: false);
     }
 
-    private string ReadLanguageOrDefault(string path, string fallback)
+    private string ReadLanguageOrDefault(string path, string fallback, bool allowAuto)
     {
         try
         {
@@ -93,8 +93,8 @@ internal sealed class LocalSettingsStore
                 return fallback;
             }
 
-            var value = File.ReadAllText(path).Trim().ToUpperInvariant();
-            return IsSupportedLanguage(value) ? value : fallback;
+            var value = NormalizeLanguageCode(File.ReadAllText(path));
+            return IsSupportedLanguage(value, allowAuto) ? value : fallback;
         }
         catch
         {
@@ -102,12 +102,12 @@ internal sealed class LocalSettingsStore
         }
     }
 
-    private void SaveLanguage(string path, string? languageCode, string fallback)
+    private void SaveLanguage(string path, string? languageCode, string fallback, bool allowAuto)
     {
         Directory.CreateDirectory(_settingsDirectory);
 
-        var normalized = (languageCode ?? string.Empty).Trim().ToUpperInvariant();
-        if (!IsSupportedLanguage(normalized))
+        var normalized = NormalizeLanguageCode(languageCode);
+        if (!IsSupportedLanguage(normalized, allowAuto))
         {
             normalized = fallback;
         }
@@ -115,8 +115,36 @@ internal sealed class LocalSettingsStore
         File.WriteAllText(path, normalized);
     }
 
-    private static bool IsSupportedLanguage(string languageCode)
+    private static string NormalizeLanguageCode(string? languageCode)
     {
-        return languageCode is "AUTO" or "EN" or "DE" or "VN";
+        var normalized = (languageCode ?? string.Empty).Trim().ToUpperInvariant();
+        return normalized switch
+        {
+            "VN" => "VI",
+            _ => normalized,
+        };
+    }
+
+    private static bool IsSupportedLanguage(string languageCode, bool allowAuto)
+    {
+        if (allowAuto && languageCode == "AUTO")
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(languageCode))
+        {
+            return false;
+        }
+
+        foreach (var c in languageCode)
+        {
+            if ((c < 'A' || c > 'Z') && c != '-')
+            {
+                return false;
+            }
+        }
+
+        return languageCode.Length <= 15;
     }
 }

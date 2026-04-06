@@ -1,20 +1,101 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace PowerTranslateExtension.Services;
 
 internal sealed class DeepLTranslator
 {
     private static readonly HttpClient Client = new();
+    private static readonly object LanguageChoicesCacheLock = new();
+    private static (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices)? _cachedLanguageChoices;
 
     private readonly LocalSettingsStore _settingsStore;
 
     public DeepLTranslator(LocalSettingsStore settingsStore)
     {
         _settingsStore = settingsStore;
+    }
+
+    public (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) GetSupportedLanguageChoices(bool forceReload = false)
+    {
+        lock (LanguageChoicesCacheLock)
+        {
+            if (!forceReload && _cachedLanguageChoices is { } cached)
+            {
+                return CloneLanguageChoices(cached);
+            }
+        }
+
+        var refreshedChoices = BuildSupportedLanguageChoices();
+
+        lock (LanguageChoicesCacheLock)
+        {
+            if (refreshedChoices.SourceChoices.Count == 0 || refreshedChoices.TargetChoices.Count == 0)
+            {
+                // If API fetch fails, deactivate language selection by clearing cache and returning no choices.
+                _cachedLanguageChoices = null;
+                return EmptyLanguageChoices();
+            }
+
+            _cachedLanguageChoices = CloneLanguageChoices(refreshedChoices);
+            return CloneLanguageChoices(_cachedLanguageChoices.Value);
+        }
+    }
+
+    public (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) ReloadSupportedLanguageChoices()
+    {
+        return GetSupportedLanguageChoices(forceReload: true);
+    }
+
+    private (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) BuildSupportedLanguageChoices()
+    {
+        var apiKey = _settingsStore.GetDeepLApiKey();
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            return EmptyLanguageChoices();
+        }
+
+        var baseUrl = GetApiBaseUrl(apiKey);
+
+        try
+        {
+            var sourceLanguages = FetchSupportedLanguages(apiKey, baseUrl + "/v2/languages?type=source");
+            var targetLanguages = FetchSupportedLanguages(apiKey, baseUrl + "/v2/languages?type=target");
+
+            if (sourceLanguages.Count == 0 || targetLanguages.Count == 0)
+            {
+                return EmptyLanguageChoices();
+            }
+
+            var sourceChoices = new List<ChoiceSetSetting.Choice>
+            {
+                new("Auto", "AUTO"),
+            };
+
+            sourceChoices.AddRange(sourceLanguages.Select(l => new ChoiceSetSetting.Choice(l.Name, l.Code)));
+
+            var targetChoices = targetLanguages
+                .Select(l => new ChoiceSetSetting.Choice(l.Name, l.Code))
+                .ToList();
+
+            return (sourceChoices, targetChoices);
+        }
+        catch
+        {
+            return EmptyLanguageChoices();
+        }
+    }
+
+    private static (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) CloneLanguageChoices((List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) choices)
+    {
+        var source = choices.SourceChoices.Select(c => new ChoiceSetSetting.Choice(c.Title, c.Value)).ToList();
+        var target = choices.TargetChoices.Select(c => new ChoiceSetSetting.Choice(c.Title, c.Value)).ToList();
+        return (source, target);
     }
 
     public TranslationResult Translate(string input, string sourceLanguage, string targetLanguage)
@@ -149,6 +230,60 @@ internal sealed class DeepLTranslator
             _ => normalized,
         };
     }
+
+    private static List<DeepLLanguage> FetchSupportedLanguages(string apiKey, string endpoint)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+        request.Headers.Authorization = new AuthenticationHeaderValue("DeepL-Auth-Key", apiKey);
+
+        using var response = Client.SendAsync(request).GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
+        {
+            return [];
+        }
+
+        var responseText = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        using var json = JsonDocument.Parse(responseText);
+
+        if (json.RootElement.ValueKind != JsonValueKind.Array)
+        {
+            return [];
+        }
+
+        var languages = new List<DeepLLanguage>();
+        foreach (var item in json.RootElement.EnumerateArray())
+        {
+            if (!item.TryGetProperty("language", out var codeNode))
+            {
+                continue;
+            }
+
+            var rawCode = codeNode.GetString();
+            if (string.IsNullOrWhiteSpace(rawCode))
+            {
+                continue;
+            }
+
+            var code = NormalizeLanguageCode(rawCode);
+            var name = item.TryGetProperty("name", out var nameNode) && !string.IsNullOrWhiteSpace(nameNode.GetString())
+                ? nameNode.GetString()!
+                : code;
+
+            languages.Add(new DeepLLanguage(code, name));
+        }
+
+        return languages
+            .GroupBy(l => l.Code, StringComparer.Ordinal)
+            .Select(g => g.First())
+            .OrderBy(l => l.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) EmptyLanguageChoices()
+    {
+        return ([], []);
+    }
 }
 
 internal readonly record struct TranslationResult(bool IsSuccess, string Message);
+internal readonly record struct DeepLLanguage(string Code, string Name);

@@ -11,12 +11,12 @@
   <Identity
     Name="PowerTranslateExtension"
     Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
-    Version="0.0.5.5" />
+    Version="0.0.6.1" />
 
   <Properties>
     <DisplayName>Power Translate</DisplayName>
     <PublisherDisplayName>Lam Tran</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <Logo>Assets\PowerTranslateLogo.png</Logo>
   </Properties>
 
   <Dependencies>

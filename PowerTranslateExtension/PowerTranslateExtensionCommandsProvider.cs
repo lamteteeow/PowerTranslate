@@ -7,6 +7,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 using PowerTranslateExtension.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PowerTranslateExtension;
 
@@ -19,52 +20,64 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
     public PowerTranslateExtensionCommandsProvider()
     {
         var settingsStore = new LocalSettingsStore();
+        var translator = new DeepLTranslator(settingsStore);
         var settings = new Settings();
-        var languageChoices = new List<ChoiceSetSetting.Choice>
-        {
-            new("AUTO", "Auto"),
-            new("EN", "English"),
-            new("DE", "German"),
-            new("VN", "Vietnamese")
-        };
+        var sourceLanguage = settingsStore.GetSourceLanguage();
+        var targetLanguage = settingsStore.GetTargetLanguage();
+        var (sourceLanguageChoices, targetLanguageChoices) = translator.GetSupportedLanguageChoices();
 
-        var sourceLanguageSetting = new ChoiceSetSetting(
-            SourceLanguageSettingKey,
-            "Input language",
-            "Language you are translating from.",
-            languageChoices)
-        {
-            Value = settingsStore.GetSourceLanguage()
-        };
+        var hasLanguageChoices = sourceLanguageChoices.Count > 0 && targetLanguageChoices.Count > 0;
 
-        var targetLanguageSetting = new ChoiceSetSetting(
-            TargetLanguageSettingKey,
-            "Target language",
-            "Language to translate into.",
-            languageChoices)
+        if (hasLanguageChoices && !sourceLanguageChoices.Any(c => string.Equals(c.Value, sourceLanguage, StringComparison.Ordinal)))
         {
-            Value = settingsStore.GetTargetLanguage()
-        };
+            sourceLanguage = sourceLanguageChoices[0].Value;
+        }
 
-        settings.Add(sourceLanguageSetting);
-        settings.Add(targetLanguageSetting);
-        settings.SettingsChanged += (_, updatedSettings) =>
+        if (hasLanguageChoices && !targetLanguageChoices.Any(c => string.Equals(c.Value, targetLanguage, StringComparison.Ordinal)))
         {
-            if (updatedSettings.TryGetSetting<string>(SourceLanguageSettingKey, out var sourceLanguage))
+            targetLanguage = targetLanguageChoices[0].Value;
+        }
+
+        if (hasLanguageChoices)
+        {
+            var sourceLanguageSetting = new ChoiceSetSetting(
+                SourceLanguageSettingKey,
+                "Input language",
+                "Language you are translating from.",
+                sourceLanguageChoices)
             {
-                settingsStore.SaveSourceLanguage(sourceLanguage);
-            }
+                Value = sourceLanguage
+            };
 
-            if (updatedSettings.TryGetSetting<string>(TargetLanguageSettingKey, out var targetLanguage))
+            var targetLanguageSetting = new ChoiceSetSetting(
+                TargetLanguageSettingKey,
+                "Target language",
+                "Language to translate into.",
+                targetLanguageChoices)
             {
-                settingsStore.SaveTargetLanguage(targetLanguage);
-            }
-        };
+                Value = targetLanguage
+            };
+
+            settings.Add(sourceLanguageSetting);
+            settings.Add(targetLanguageSetting);
+            settings.SettingsChanged += (_, updatedSettings) =>
+            {
+                if (updatedSettings.TryGetSetting<string>(SourceLanguageSettingKey, out var sourceLanguage))
+                {
+                    settingsStore.SaveSourceLanguage(sourceLanguage);
+                }
+
+                if (updatedSettings.TryGetSetting<string>(TargetLanguageSettingKey, out var targetLanguage))
+                {
+                    settingsStore.SaveTargetLanguage(targetLanguage);
+                }
+            };
+        }
 
         Settings = settings;
 
         DisplayName = "Power Translate";
-        Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        Icon = IconHelpers.FromRelativePath("Assets\\PowerTranslateLogo.png");
         _commands = [
             new CommandItem(new DeepLSettingsPage())
             {
