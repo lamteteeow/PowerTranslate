@@ -2,11 +2,141 @@
 
 ![PowerTranslate Logo](PowerTranslateExtension/Assets/PowerTranslateLogo.png)
 
-A lightweight translation extension for the PowerToys Command Palette.
+A lightweight, feature-rich translation extension for Microsoft PowerToys Command Palette, powered by DeepL API.
 
-Status: early development (not production-ready).
+## Overview
 
-Contributions are welcome.
-Disclaimer: the author is inexperienced with common open-source standards and conventions, and would appreciate any support.
+PowerTranslate brings fast, accurate translation directly into your PowerToys Command Palette workflow. Open the Command Palette, search for "Translate", and instantly translate text between 30+ language pairs using DeepL's industry-leading neural translation engine.
 
-License: MIT. See [LICENSE](LICENSE).
+## Key Features
+
+- **Quick Translation**: Translate text directly from the Command Palette with automatic language detection
+- **Multi-Language Support**: Support for 30+ languages via DeepL API, with intelligent AUTO-detection for source language
+- **Flexible Language Selection**: Easily switch source and target languages with an intuitive picker interface
+- **Persistent Settings**: Source/target language preferences saved between sessions for seamless workflow
+- **API Key Management**: Built-in configuration page for secure, encrypted DeepL API key storage
+- **Cached Language Lists**: Efficient language list caching to minimize API calls
+- **Lightweight Design**: Minimal dependencies, optimized for responsiveness
+- **Copy-Friendly Results**: Translation results display with source→target language indicator for clarity
+
+## Requirements
+
+- **OS**: Windows 10 Build 19041 or later, or Windows 11
+- **PowerToys**: Latest version with Command Palette support
+- **.NET**: .NET 9.0 (included in packaged app)
+- **DeepL API Key**: Free or paid account at [deepl.com](https://www.deepl.com/docs-api/accessing-the-api)
+
+## Installation
+
+### From Microsoft Store (Recommended)
+_Coming soon_ - App will be available on Microsoft Store. Link will be updated here upon release.
+
+### Manual Installation (Developer)
+1. Clone this repository
+2. Build the project in Visual Studio 2022
+3. Deploy using `Deploy Extension (Debug x64)` or `Deploy Extension (Debug ARM64)` tasks
+4. Reload PowerToys Command Palette extensions
+
+## How It Works
+
+1. Open PowerToys Command Palette
+2. Type "Translate" to access translation commands
+3. Configure your DeepL API key (one-time setup)
+4. Select or leave source language as AUTO for automatic detection
+5. Choose target language
+6. Enter text to translate
+7. View results with automatic copy-to-clipboard support
+8. Change languages on-the-fly without re-entering text
+
+## Configuration
+
+After installation, use the "Configure DeepL API key" command in the palette to:
+- Enter your DeepL API key (get one at [deepl.com](https://www.deepl.com/docs-api/accessing-the-api))
+- Validate connectivity to the DeepL API
+- Save encrypted key for future use
+
+> **Note**: After setting the API key, reload Command Palette extensions to refresh language choices. Use `Ctrl+Shift+P` and search "Reload Command Palette extensions".
+
+## Architecture
+
+```
+PowerTranslateExtension/
+├── Services/
+│   ├── DeepLTranslator.cs       # DeepL API integration with language caching
+│   └── LocalSettingsStore.cs    # Encrypted key storage & language preferences
+├── Pages/
+│   ├── PowerTranslateExtensionPage.cs  # Main translation UI
+│   └── DeepLSettingsPage.cs            # API key configuration
+└── PowerTranslateExtensionCommandsProvider.cs  # Extension entry point
+```
+
+### Key Components
+
+- **DeepLTranslator**: Handles all API communication, language list caching, and translation requests with metadata
+- **LocalSettingsStore**: Manages encrypted API key storage and language preference persistence with thread-safe caching
+- **PowerTranslateExtensionPage**: Interactive translation page with copy button and language picker navigation
+- **DeepLSettingsPage**: Configuration form for API key setup and validation
+
+## Troubleshooting
+
+**Languages not loading?**
+- Verify your DeepL API key is valid: use "Configure DeepL API key" command
+- Check your internet connection
+- Ensure you've reloaded Command Palette extensions after saving API key
+
+**Translation not working?**
+- Check API key validity (free accounts have usage limits)
+- Verify internet connectivity
+- Try a different language pair to isolate the issue
+
+**Settings not persisting?**
+- Settings are cached in: `C:\Users\[User]\AppData\Local\Packages\PowerTranslateExtension_8wekyb3d8bbwe\LocalCache\Local\PowerTranslateExtension\`
+- Verify folder exists and is accessible
+- Clear cache files if corrupted: `deepl.key`, `source-language.txt`, `target-language.txt`
+
+**API key not saving?**
+- Ensure API key is not empty
+- Verify Windows can encrypt data (Windows Data Protection API must be available)
+- Run "Configure DeepL API key" command and try again
+
+## Privacy
+
+### Data Handling
+- **Translation requests**: Sent to DeepL API servers over HTTPS
+- **API key**: Stored locally and encrypted using Windows Data Protection API
+- **Language preferences**: Stored locally in plain text (no sensitive data)
+- **No telemetry**: No usage data, tracking, or analytics collected
+
+### Data Stored Locally
+- Encrypted API key (_not_ accessible outside secure storage)
+- Selected source language
+- Selected target language
+
+### External Communication
+- Only communicates with DeepL API for translation requests
+- No communication with Microsoft or PowerToys telemetry systems beyond Command Palette discovery
+
+### GDPR/CCPA Compliance
+- No personal data collected or stored
+- No third-party tracking
+- Users have full control over API key and language settings
+
+## Development Status
+
+**Status**: Stable v1.0.0 release
+
+Core translation functionality, language selection, and settings persistence are production-ready. Windows 10/11 support verified.
+
+## Contributing
+
+Contributions are welcome! Whether it's bug fixes, feature requests, documentation improvements, or translations, we'd love your help.
+
+> **Disclaimer**: The author is inexperienced with common open-source standards and conventions. We greatly appreciate feedback, code reviews, and guidance from experienced contributors.
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT License - See [LICENSE](LICENSE) file for details.
+
+This software is provided "AS IS" without warranty of any kind. The author assumes no liability for any damages, data loss, or issues arising from use of this extension.
