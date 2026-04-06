@@ -152,7 +152,14 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
             }
 
             _resultTitle = string.Empty;
-            _resultBody = result.Message;
+            if (result.IsSuccess && !string.IsNullOrWhiteSpace(result.SourceLanguage) && !string.IsNullOrWhiteSpace(result.TargetLanguage))
+            {
+                _resultBody = $"{result.SourceLanguage} -> {result.TargetLanguage}\n{result.Message}";
+            }
+            else
+            {
+                _resultBody = result.Message;
+            }
             RaiseItemsChanged(1);
         }
         catch (OperationCanceledException)
