@@ -157,7 +157,7 @@ PowerTranslate communicates only with DeepL for translation requests and stores 
 
 ### Support Contact
 
-- GitHub Issues: <https://github.com/>lamteteeow/PowerTranslateExtension/issues
+- GitHub Issues: <https://github.com/lamteteeow/PowerTranslateExtension/issues>
 
 ## Development Status
 
