@@ -71,7 +71,7 @@ internal sealed class LocalSettingsStore
         File.WriteAllBytes(_apiKeyPath, encrypted);
     }
 
-    public string GetSourceLanguage()
+    public static string GetSourceLanguage()
     {
         lock (CacheLock)
         {
@@ -79,7 +79,7 @@ internal sealed class LocalSettingsStore
         }
     }
 
-    public string GetTargetLanguage()
+    public static string GetTargetLanguage()
     {
         lock (CacheLock)
         {

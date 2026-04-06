@@ -22,8 +22,8 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
         var settingsStore = new LocalSettingsStore();
         var translator = new DeepLTranslator(settingsStore);
         var settings = new Settings();
-        var sourceLanguage = settingsStore.GetSourceLanguage();
-        var targetLanguage = settingsStore.GetTargetLanguage();
+        var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
+        var targetLanguage = LocalSettingsStore.GetTargetLanguage();
         var (sourceLanguageChoices, targetLanguageChoices) = translator.GetSupportedLanguageChoices();
 
         EnsureChoicePresent(sourceLanguageChoices, sourceLanguage);

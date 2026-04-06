@@ -42,8 +42,8 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
     public override IListItem[] GetItems()
     {
         var languageChoices = _translator.GetSupportedLanguageChoices();
-        var sourceLanguage = _settingsStore.GetSourceLanguage();
-        var targetLanguage = _settingsStore.GetTargetLanguage();
+        var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
+        var targetLanguage = LocalSettingsStore.GetTargetLanguage();
 
         var items = new List<IListItem>
         {
@@ -141,8 +141,8 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
             _resultBody = "Translating...";
             RaiseItemsChanged(1);
 
-            var sourceLanguage = _settingsStore.GetSourceLanguage();
-            var targetLanguage = _settingsStore.GetTargetLanguage();
+            var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
+            var targetLanguage = LocalSettingsStore.GetTargetLanguage();
             var result = await Task.Run(() => _translator.Translate(input, sourceLanguage, targetLanguage), cancellationToken)
                 .ConfigureAwait(false);
 

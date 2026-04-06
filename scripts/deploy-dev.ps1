@@ -5,7 +5,9 @@ param(
     [ValidateSet("x64", "ARM64")]
     [string]$Platform = "x64",
 
-    [string]$CertificateThumbprint
+    [string]$CertificateThumbprint,
+
+    [switch]$SkipInstall
 )
 
 $ErrorActionPreference = "Stop"
@@ -54,6 +56,10 @@ Write-Host "Publishing $Configuration|$Platform ..." -ForegroundColor Cyan
 Write-Host "Using certificate thumbprint $CertificateThumbprint for MSIX signing." -ForegroundColor Cyan
 dotnet msbuild $projectPath /restore /p:Configuration=$Configuration /p:Platform=$Platform /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint=$CertificateThumbprint /v:m
 
+if ($LASTEXITCODE -ne 0) {
+    throw "Build failed with exit code $LASTEXITCODE."
+}
+
 $appPackagesRoot = Join-Path $projectDir "AppPackages"
 if (-not (Test-Path $appPackagesRoot)) {
     throw "AppPackages folder not found: $appPackagesRoot"
@@ -72,6 +78,17 @@ if (-not $candidateFolder) {
 $addDevPackageScript = Join-Path $candidateFolder.FullName "Add-AppDevPackage.ps1"
 if (-not (Test-Path $addDevPackageScript)) {
     throw "Installer script missing: $addDevPackageScript"
+}
+
+if ($Platform -eq "ARM64" -and $env:PROCESSOR_ARCHITECTURE -ne "ARM64") {
+    Write-Host "Skipping package install: ARM64 package cannot be installed on architecture '$($env:PROCESSOR_ARCHITECTURE)'." -ForegroundColor Yellow
+    $SkipInstall = $true
+}
+
+if ($SkipInstall) {
+    Write-Host "Package build finished. Install was skipped by configuration." -ForegroundColor Green
+    Write-Host "Output folder: $($candidateFolder.FullName)" -ForegroundColor Green
+    return
 }
 
 $existingPackages = Get-AppxPackage -Name $packageIdentityName -ErrorAction SilentlyContinue
