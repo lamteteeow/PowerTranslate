@@ -25,6 +25,7 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 - **PowerToys**: Latest version with Command Palette support
 - **.NET**: .NET 9.0 (included in packaged app)
 - **DeepL API Key**: Free or paid account at [deepl.com](https://www.deepl.com/docs-api/accessing-the-api)
+- **Architectures**: x64 and ARM64 packages are produced for release
 
 ## Installation
 
@@ -50,6 +51,20 @@ _Coming soon_ - App will be available on Microsoft Store. Link will be updated h
 7. View results with automatic copy-to-clipboard support
 8. Change languages on-the-fly without re-entering text
 
+## Screenshots
+
+### Translation UI
+
+![Translation UI](PowerTranslateExtension/Assets/TranslationUI.png)
+
+### Language Selection
+
+![Language Selection](PowerTranslateExtension/Assets/LanguageSelect.png)
+
+### Settings Page
+
+![Settings Page](PowerTranslateExtension/Assets/SettingsPage.png)
+
 ## Configuration
 
 After installation, use the "Configure DeepL API key" command in the palette to:
@@ -61,7 +76,7 @@ After installation, use the "Configure DeepL API key" command in the palette to:
 
 ## Architecture
 
-```
+```text
 PowerTranslateExtension/
 ├── Services/
 │   ├── DeepLTranslator.cs       # DeepL API integration with language caching
@@ -164,6 +179,13 @@ PowerTranslate communicates only with DeepL for translation requests and stores 
 **Status**: Stable v1.0.0 release
 
 Core translation functionality, language selection, and settings persistence are production-ready. Windows 10/11 support verified.
+
+### Architecture Validation
+
+- **x64 (Windows host)**: Build, package, install, and extension startup verified.
+- **ARM64 package generation**: Build and package output verified on x64 host.
+- **ARM64 install on x64 host**: Skipped by design because Windows blocks cross-architecture package installation.
+- **ARM64 runtime on ARM64 device**: Final validation should be completed on real ARM64 hardware before Store submission.
 
 ## Contributing
 
