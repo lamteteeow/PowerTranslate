@@ -57,8 +57,9 @@ Recommended workflow:
 
 1. Build package with the publish profile (`win-x64`).
 2. If sideloading outside Store, sign the package with your trusted certificate.
-3. Validate installation on a clean machine profile.
-4. Keep certificate material out of source control.
+3. Run pre-publish branding validation: `pwsh -File scripts/prepublish-check.ps1`.
+4. Validate installation on a clean machine profile.
+5. Keep certificate material out of source control.
 
 ## License
 
