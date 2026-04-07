@@ -2,7 +2,7 @@ param(
     [ValidateSet("Debug", "Release")]
     [string]$Configuration = "Debug",
 
-    [ValidateSet("x64", "ARM64")]
+    [ValidateSet("x64")]
     [string]$Platform = "x64",
 
     [string]$CertificateThumbprint,
@@ -65,7 +65,12 @@ if (-not (Test-Path $appPackagesRoot)) {
     throw "AppPackages folder not found: $appPackagesRoot"
 }
 
-$folderPattern = "*_" + $Platform + "_" + $Configuration + "_Test"
+$folderPattern = if ($Configuration -eq "Release") {
+    "*_" + $Platform + "_Test"
+}
+else {
+    "*_" + $Platform + "_" + $Configuration + "_Test"
+}
 $candidateFolder = Get-ChildItem -Path $appPackagesRoot -Directory |
     Where-Object { $_.Name -like $folderPattern } |
     Sort-Object LastWriteTime -Descending |
@@ -78,11 +83,6 @@ if (-not $candidateFolder) {
 $addDevPackageScript = Join-Path $candidateFolder.FullName "Add-AppDevPackage.ps1"
 if (-not (Test-Path $addDevPackageScript)) {
     throw "Installer script missing: $addDevPackageScript"
-}
-
-if ($Platform -eq "ARM64" -and $env:PROCESSOR_ARCHITECTURE -ne "ARM64") {
-    Write-Host "Skipping package install: ARM64 package cannot be installed on architecture '$($env:PROCESSOR_ARCHITECTURE)'." -ForegroundColor Yellow
-    $SkipInstall = $true
 }
 
 if ($SkipInstall) {

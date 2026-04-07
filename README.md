@@ -25,7 +25,7 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 - **PowerToys**: Latest version with Command Palette support
 - **.NET**: .NET 9.0 (included in packaged app)
 - **DeepL API Key**: Free or paid account at [deepl.com](https://www.deepl.com/docs-api/accessing-the-api)
-- **Architectures**: x64 and ARM64 packages are produced for release
+- **Architecture**: x64 (AMD64) only
 
 ## Installation
 
@@ -37,7 +37,7 @@ _Coming soon_ - App will be available on Microsoft Store. Link will be updated h
 
 1. Clone this repository
 2. Build the project in Visual Studio 2022
-3. Deploy using `Deploy Extension (Debug x64)` or `Deploy Extension (Debug ARM64)` tasks
+3. Deploy using `Deploy Extension (Debug x64)` task
 4. Reload PowerToys Command Palette extensions
 
 ## How It Works
@@ -183,9 +183,7 @@ Core translation functionality, language selection, and settings persistence are
 ### Architecture Validation
 
 - **x64 (Windows host)**: Build, package, install, and extension startup verified.
-- **ARM64 package generation**: Build and package output verified on x64 host.
-- **ARM64 install on x64 host**: Skipped by design because Windows blocks cross-architecture package installation.
-- **ARM64 runtime on ARM64 device**: Final validation should be completed on real ARM64 hardware before Store submission.
+- **ARM64 support**: Not targeted in this release.
 
 ## Contributing
 

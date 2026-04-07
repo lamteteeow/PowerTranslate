@@ -9,7 +9,6 @@ Thanks for your interest in improving PowerTranslate.
 3. Open `PowerTranslateExtension.sln`.
 4. Build and deploy with one of the VS Code tasks:
    - `Deploy Extension (Debug x64)`
-   - `Deploy Extension (Debug ARM64)`
 
 ## Code Quality Standards
 
@@ -25,13 +24,12 @@ Thanks for your interest in improving PowerTranslate.
 Before opening a pull request:
 
 1. Build successfully for x64.
-2. Validate ARM64 build if your environment supports it.
-3. Test these scenarios manually:
+2. Test these scenarios manually:
    - Missing API key
    - Invalid API key
    - No internet connection
    - At least two language pairs, including AUTO source detection
-4. Confirm language preferences persist across extension reload.
+3. Confirm language preferences persist across extension reload.
 
 ## Commit and PR Guidelines
 
@@ -57,7 +55,7 @@ For Microsoft Store submission, package signing is handled by Microsoft during i
 
 Recommended workflow:
 
-1. Build package with the publish profile (`win-x64` or `win-arm64`).
+1. Build package with the publish profile (`win-x64`).
 2. If sideloading outside Store, sign the package with your trusted certificate.
 3. Validate installation on a clean machine profile.
 4. Keep certificate material out of source control.
