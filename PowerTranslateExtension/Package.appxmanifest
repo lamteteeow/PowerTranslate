@@ -9,14 +9,14 @@
   IgnorableNamespaces="uap uap3 rescap">
 
   <Identity
-    Name="PowerTranslateExtension"
-    Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+    Name="lamteteeow.PowerTranslate"
+    Publisher="CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2"
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>Power Translate</DisplayName>
-    <PublisherDisplayName>Lam Tran</PublisherDisplayName>
-    <Logo>Assets\PowerTranslateLogo.png</Logo>
+    <DisplayName>lamteteeow.PowerTranslate</DisplayName>
+    <PublisherDisplayName>lamteteeow</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>

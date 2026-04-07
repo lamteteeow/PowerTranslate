@@ -85,3 +85,14 @@ This file defines the working standards followed for this repository.
 - Debug builds are for local iteration.
 - Release builds are required for Store publishing.
 - Keep deployment scripts fail-fast on build errors.
+
+## Release Execution Summary (v1.0.0.0)
+
+- Updated Partner Center identity values in manifest and project Appx properties.
+- Standardized asset inclusion with `Assets\**\*.png` and added `PrepareAssets` pre-build copy target.
+- Regenerated tile/splash/store logos from `PowerTranslateLogo.png`.
+- Added additional store variants: `SmallTile.png` (71x71) and `LargeTile.png` (310x310).
+- Ran branding validation gate: `scripts/prepublish-check.ps1`.
+- Built Release MSIX packages for x64 and ARM64.
+- Created `bundle_mapping.txt` and generated final `.msixbundle` with `makeappx`.
+- Published GitHub release and release tag for final submission milestone.
