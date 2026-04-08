@@ -4,15 +4,20 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Threading;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace PowerTranslateExtension.Services;
 
 internal sealed class DeepLTranslator
 {
-    private static readonly HttpClient Client = new();
+    private static readonly HttpClient Client = new()
+    {
+        Timeout = TimeSpan.FromSeconds(5)
+    };
     private static readonly object LanguageChoicesCacheLock = new();
     private static (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices)? _cachedLanguageChoices;
+    private const int MaxRetries = 3;
 
     private readonly LocalSettingsStore _settingsStore;
 
@@ -132,23 +137,43 @@ internal sealed class DeepLTranslator
 
         try
         {
-            using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-            request.Headers.Authorization = new AuthenticationHeaderValue("DeepL-Auth-Key", apiKey);
-            var requestFields = new List<KeyValuePair<string, string>>
-            {
-                new("text", input.Trim()),
-                new("target_lang", target)
-            };
+            HttpResponseMessage? response = null;
+            string? responseText = null;
 
-            if (!string.Equals(source, "AUTO", StringComparison.OrdinalIgnoreCase))
+            for (int attempt = 0; attempt <= MaxRetries; attempt++)
             {
-                requestFields.Add(new KeyValuePair<string, string>("source_lang", source));
+                try
+                {
+                    using var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("DeepL-Auth-Key", apiKey);
+                    var requestFields = new List<KeyValuePair<string, string>>
+                    {
+                        new("text", input.Trim()),
+                        new("target_lang", target)
+                    };
+
+                    if (!string.Equals(source, "AUTO", StringComparison.OrdinalIgnoreCase))
+                    {
+                        requestFields.Add(new KeyValuePair<string, string>("source_lang", source));
+                    }
+
+                    request.Content = new FormUrlEncodedContent(requestFields);
+
+                    response = Client.SendAsync(request).GetAwaiter().GetResult();
+                    responseText = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    break;
+                }
+                catch (HttpRequestException) when (attempt < MaxRetries)
+                {
+                    Thread.Sleep(500 * (attempt + 1));
+                    continue;
+                }
             }
 
-            request.Content = new FormUrlEncodedContent(requestFields);
-
-            using var response = Client.SendAsync(request).GetAwaiter().GetResult();
-            var responseText = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            if (response == null || responseText == null)
+            {
+                return new TranslationResult(false, "Network error: Unable to connect to DeepL after multiple attempts. Check your internet connection.");
+            }
 
             if (!response.IsSuccessStatusCode)
             {
@@ -180,11 +205,12 @@ internal sealed class DeepLTranslator
         }
         catch (HttpRequestException ex)
         {
-            return new TranslationResult(false, $"Network error: Check your internet connection. ({ex.Message})");
+            var message = ex.InnerException?.Message ?? ex.Message;
+            return new TranslationResult(false, $"Network error: Unable to reach DeepL. Check your internet connection and firewall settings. Details: {message}");
         }
         catch (OperationCanceledException)
         {
-            return new TranslationResult(false, "Request timed out. DeepL server may be slow or unreachable.");
+            return new TranslationResult(false, "Request timed out (5 seconds). The DeepL server is not responding. Check your internet connection or try again in a moment.");
         }
         catch (JsonException)
         {
@@ -248,11 +274,12 @@ internal sealed class DeepLTranslator
         }
         catch (HttpRequestException ex)
         {
-            return new TranslationResult(false, $"Network error: Check your internet connection. ({ex.Message})");
+            var message = ex.InnerException?.Message ?? ex.Message;
+            return new TranslationResult(false, $"Network error: Unable to reach DeepL. Check your internet connection. Details: {message}");
         }
         catch (OperationCanceledException)
         {
-            return new TranslationResult(false, "Request timed out. DeepL server may be unreachable.");
+            return new TranslationResult(false, "Connection timed out (5 seconds). DeepL server is not responding. Check your internet connection and try again.");
         }
         catch (JsonException)
         {

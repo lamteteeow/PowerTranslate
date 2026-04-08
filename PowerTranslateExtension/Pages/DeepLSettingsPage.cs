@@ -10,7 +10,6 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     private readonly LocalSettingsStore _settingsStore = new();
     private readonly DeepLTranslator _translator;
     private readonly ApiKeyForm _form;
-    private readonly MarkdownContent _statusContent = new();
 
     public DeepLSettingsPage()
     {
@@ -18,12 +17,12 @@ internal sealed partial class DeepLSettingsPage : ContentPage
         _form = new ApiKeyForm(this);
         Icon = IconHelpers.FromRelativePath("Assets\\PowerTranslateLogo.png");
         Title = "DeepL Settings";
-        UpdateStatusBody("Enter API key and select Save.");
+        UpdateStatusBody("Enter API key and select Save.", isError: false);
     }
 
     public override IContent[] GetContent()
     {
-        return [_statusContent, _form];
+        return [_form];
     }
 
     private CommandResult SaveApiKey(string? rawValue)
@@ -36,7 +35,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
             if (!string.IsNullOrWhiteSpace(previousKey))
             {
                 _translator.ReloadSupportedLanguageChoices();
-                UpdateStatusBody("Using previously saved API key. Settings unchanged.");
+                UpdateStatusBody("Using previously saved API key. Settings unchanged.", isError: false);
                 return CommandResult.ShowToast(new ToastArgs
                 {
                     Message = "Using previously saved API key.",
@@ -44,7 +43,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
                 });
             }
 
-            UpdateStatusBody("API key is not set.");
+            UpdateStatusBody("API key is not set.", isError: true);
             return CommandResult.ShowToast(new ToastArgs
             {
                 Message = "API key is not set.",
@@ -60,17 +59,17 @@ internal sealed partial class DeepLSettingsPage : ContentPage
             if (!connectionResult.IsSuccess)
             {
                 _settingsStore.SaveDeepLApiKey(previousKey);
-                UpdateStatusBody("API is invalid.");
+                UpdateStatusBody($"{connectionResult.Message}", isError: true);
                 return CommandResult.ShowToast(new ToastArgs
                 {
-                    Message = "API is invalid.",
+                    Message = $"Failed to validate: {connectionResult.Message}",
                     Result = CommandResult.KeepOpen(),
                 });
             }
 
             _translator.ReloadSupportedLanguageChoices();
 
-            UpdateStatusBody("API is valid. Settings saved.");
+            UpdateStatusBody("API is valid. Settings saved.", isError: false);
             return CommandResult.ShowToast(new ToastArgs
             {
                 Message = "API is valid. Settings saved.",
@@ -78,7 +77,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
             });
         }
 
-        UpdateStatusBody("Settings saved.");
+        UpdateStatusBody("Settings saved.", isError: false);
         return CommandResult.ShowToast(new ToastArgs
         {
             Message = "Settings saved.",
@@ -90,16 +89,15 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     {
         _settingsStore.SaveDeepLApiKey(null);
         _translator.ReloadSupportedLanguageChoices();
-        UpdateStatusBody("API key cleared.");
+        UpdateStatusBody("API key cleared.", isError: false);
         return CommandResult.ShowToast(new ToastArgs { Message = "Settings saved.", Result = CommandResult.KeepOpen() });
     }
 
-    private void UpdateStatusBody(string message)
+    private void UpdateStatusBody(string message, bool isError)
     {
         var maskedCurrentKey = MaskKey(_settingsStore.GetDeepLApiKey());
         var maskedLine = string.IsNullOrEmpty(maskedCurrentKey) ? "Not set" : maskedCurrentKey;
-        _statusContent.Body =
-            $"Current API key: {maskedLine}\n\n{message}\n\nTip: After setting the API key, reload Command Palette extensions to refresh language choices.";
+        _form.UpdateStatus(maskedLine, message, isError);
         RaiseItemsChanged(1);
     }
 
@@ -120,37 +118,78 @@ internal sealed partial class DeepLSettingsPage : ContentPage
         public ApiKeyForm(DeepLSettingsPage owner)
         {
             _owner = owner;
-            TemplateJson = """
+            DataJson = "{}";
+            UpdateStatus("Not set", "Enter API key and select Save.", isError: false);
+        }
+
+        public void UpdateStatus(string maskedApiKey, string message, bool isError)
+        {
+            var safeKey = JsonEncoded(maskedApiKey);
+            var safeMessage = JsonEncoded(message);
+            var color = isError ? "Attention" : "Good";
+
+            TemplateJson = $$"""
 {
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "type": "AdaptiveCard",
-  "version": "1.6",
-  "body": [
-    {
-      "type": "Input.Text",
-      "id": "apiKey",
-      "label": "DeepL API key",
-      "placeholder": "Paste DeepL API key",
-      "style": "password",
-      "isMultiline": false,
-            "isRequired": false
-    }
-  ],
-  "actions": [
-    {
-      "type": "Action.Submit",
-      "title": "Save",
-      "data": { "action": "save" }
-    },
-    {
-      "type": "Action.Submit",
-      "title": "Clear",
-      "data": { "action": "clear" }
-    }
-  ]
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.6",
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "Current API key: {{safeKey}}",
+            "wrap": true,
+            "spacing": "None"
+        },
+        {
+            "type": "TextBlock",
+            "text": "{{safeMessage}}",
+            "wrap": true,
+            "color": "{{color}}",
+            "weight": "Bolder",
+            "spacing": "Small"
+        },
+        {
+            "type": "TextBlock",
+            "text": "Tip: After setting the API key, reload Command Palette extensions to refresh language choices.",
+            "wrap": true,
+            "isSubtle": true,
+            "spacing": "Small"
+        },
+        {
+            "type": "Input.Text",
+            "id": "apiKey",
+            "label": "DeepL API key",
+            "placeholder": "Paste DeepL API key",
+            "style": "password",
+            "isMultiline": false,
+            "isRequired": false,
+            "spacing": "Medium"
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "Save",
+            "data": { "action": "save" }
+        },
+        {
+            "type": "Action.Submit",
+            "title": "Clear",
+            "data": { "action": "clear" }
+        }
+    ]
 }
 """;
-            DataJson = "{}";
+        }
+
+        private static string JsonEncoded(string value)
+        {
+            var input = value ?? string.Empty;
+            return input
+                    .Replace("\\", "\\\\")
+                    .Replace("\"", "\\\"")
+                    .Replace("\r", "")
+                    .Replace("\n", "\\n");
         }
 
         public override CommandResult SubmitForm(string payload)

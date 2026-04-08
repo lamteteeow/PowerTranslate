@@ -3,8 +3,8 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PowerTranslateExtension</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>1.0.0.1</FileVersion>
 
     <WindowsSdkPackageVersion>10.0.26100.68-preview</WindowsSdkPackageVersion>
     <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
@@ -14,7 +14,7 @@
 
     <AppxPackageIdentityName>lamteteeow.PowerTranslate</AppxPackageIdentityName>
     <AppxPackagePublisher>CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2</AppxPackagePublisher>
-    <AppxPackageVersion>1.0.0.0</AppxPackageVersion>
+    <AppxPackageVersion>1.0.0.1</AppxPackageVersion>
 
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <EnableMsixTooling>true</EnableMsixTooling>
@@ -88,11 +88,8 @@
 
     <CsWinRTAotOptimizerEnabled>true</CsWinRTAotOptimizerEnabled>
     <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel>
-    <!-- Suppress DynamicallyAccessedMemberTypes.PublicParameterlessConstructor in fallback code path of Windows SDK projection -->
-    <WarningsNotAsErrors>IL2081;$(WarningsNotAsErrors)</WarningsNotAsErrors>
-
-    <!-- When publishing trimmed, make sure to treat trimming warnings as build errors -->
-    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+    <!-- Trimming disabled for MSIX packaged desktop app -->
+    <PublishTrimmed>false</PublishTrimmed>
 
   </PropertyGroup>
 
@@ -108,12 +105,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'!='Debug'">
-    <!-- In Release builds, trimming is enabled by default. 
-         feel free to disable this if needed -->
-    <PublishTrimmed>true</PublishTrimmed>
-
-    <!-- In release, also ignore the aforementioned ILLink warning -->
-    <ILLinkTreatWarningsAsErrors>false</ILLinkTreatWarningsAsErrors>
+    <!-- Release builds: no trimming needed for MSIX packaged app -->
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
 

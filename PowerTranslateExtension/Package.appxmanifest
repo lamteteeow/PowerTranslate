@@ -11,17 +11,17 @@
   <Identity
     Name="lamteteeow.PowerTranslate"
     Publisher="CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2"
-    Version="1.0.0.0" />
+    Version="1.0.0.1" />
 
   <Properties>
-    <DisplayName>lamteteeow.PowerTranslate</DisplayName>
+    <DisplayName>Power Translate</DisplayName>
     <PublisherDisplayName>lamteteeow</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.19041.0" MaxVersionTested="10.0.19041.0" />
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.19041.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26200.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26200.0" />
   </Dependencies>
 
   <Resources>

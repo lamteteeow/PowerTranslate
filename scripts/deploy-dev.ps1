@@ -91,10 +91,18 @@ if ($SkipInstall) {
     return
 }
 
-$existingPackages = Get-AppxPackage -Name $packageIdentityName -ErrorAction SilentlyContinue
+$legacyPackageNames = @(
+    $packageIdentityName,
+    "PowerTranslateExtension"
+)
+
+$existingPackages = Get-AppxPackage -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -in $legacyPackageNames }
+
 if ($existingPackages) {
-    Write-Host "Removing existing installed package(s) for '$packageIdentityName' to avoid same-version reinstall conflicts ..." -ForegroundColor Yellow
+    Write-Host "Removing existing installed package(s) for PowerTranslate to avoid duplicate installs ..." -ForegroundColor Yellow
     foreach ($pkg in $existingPackages) {
+        Write-Host "Removing $($pkg.PackageFullName)" -ForegroundColor Yellow
         Remove-AppxPackage -Package $pkg.PackageFullName
     }
 }

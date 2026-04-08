@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0.1] - 2026-04-08
+
+### Added
+
+- Configure DeepL settings context now supports prominent status styling for validation feedback.
+- ARM64 build-validation workflow documented for environments where ARM64 packaging checks are needed.
+- Helper scripts for generating and installing test certificates in local development workflows.
+
+### Changed
+
+- Improved DeepL settings page feedback behavior for invalid keys and network validation failures.
+- Updated tester instructions with x64 deploy flow and ARM64 package verification steps.
+
+### Fixed
+
+- Clarified tester steps and troubleshooting wording for reload flow and local settings persistence.
+
 ## [1.0.0] - 2026-04-07
 
 ### Added
