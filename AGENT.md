@@ -56,6 +56,9 @@ This file defines the working standards followed for this repository.
 - Create annotated git tag for release:
   - `v1.0.0` style
 - Publish GitHub Release from the tag with structured notes.
+- GitHub Release title naming is required:
+  - `PowerTranslate v<version>`
+  - Example: `PowerTranslate v1.0.0.1`
 
 ## Asset and File Naming Convention
 
