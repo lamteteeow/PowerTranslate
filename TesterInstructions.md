@@ -43,9 +43,10 @@ For the sake of testing, a DeepL API key is provided for this submission.
 
 ### Step 2: Install PowerTranslate
 
-1. Open the `PowerTranslateExtension_1.0.2.0_x64.msix` package in File Explorer or run it directly with App Installer
-2. Approve the certificate prompt if Windows asks for it
-3. Finish the install wizard
+1. Import `PowerTranslateExtension_1.0.2.0_x64.cer` to `CurrentUser\\TrustedPeople`.
+2. Open the `PowerTranslateExtension_1.0.2.0_x64.msix` package in File Explorer or run it directly with App Installer.
+3. Approve the certificate prompt if Windows asks for it.
+4. Finish the install wizard.
 
 ### Step 3: Refresh PowerToys
 
@@ -119,6 +120,7 @@ For the sake of testing, a DeepL API key is provided for this submission.
 - Make sure the bundle is signed with the current publisher certificate
 - Reinstall the certificate if Windows asks for trust approval
 - Use an elevated PowerShell session if certificate trust prompts fail
+- If Windows reports `0x80073CFB` (same identity, different contents), remove the existing package and reinstall the release `.msix`
 
 ### Translation Does Not Work
 

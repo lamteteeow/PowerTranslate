@@ -12,6 +12,12 @@ All notable changes to this project will be documented in this file.
 
 - Bumped app/package versioning to `1.0.2.0` across project and manifest.
 - Reduced README header logo display size for cleaner storefront/repository presentation.
+- Updated installation documentation to prefer signed Release `.msix` + `.cer` flow.
+
+### Fixed
+
+- Resolved same-version reinstall confusion by documenting `0x80073CFB` behavior and required uninstall/reinstall path.
+- Verified GitHub `v1.0.2.0` release assets match local signed Release hashes.
 
 ## [1.0.1.0] - 2026-04-08
 

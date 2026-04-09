@@ -20,6 +20,8 @@ This checklist maps Microsoft Command Palette publish guidance to current reposi
 | CmdPalProvider activation CLSID exists and matches COM class usage | Extensibility overview | PASS | `CreateInstance ClassId` in `PowerTranslateExtension/Package.appxmanifest` |
 | Required base assets exist and match expected dimensions | Publish extension guide: icon prerequisites | PASS | `scripts/prepublish-check.ps1` passes |
 | Store upload artifact generated successfully | Upload app packages guidance | PASS | `PowerTranslateExtension/AppPackages/PowerTranslateExtension_1.0.2.0_x64.msixupload` |
+| GitHub release sideload artifacts use signed Release package | Release distribution validation | PASS | `PowerTranslateExtension_1.0.2.0_x64.msix` and `.cer` attached to `v1.0.2.0` |
+| GitHub release artifact digests match local signed Release outputs | Integrity verification | PASS | msix `sha256:48764bee768a9878558e171a6b8008e865e499b1c28e325045986e312c9a7f2d`, cer `sha256:0a3698f9edeb68cec64a703b75c2299533c1ed9df1f485ea4ec91d6b54d69aea` |
 | x64-only support explicitly documented for reviewers | Submission/testing guidance best practice | PASS | `TesterInstructions.md` package scope and install steps |
 | Startup path from COM activation does not crash in Release x64 smoke test | Certification readiness requirement | PASS | `%LocalAppData%/PowerTranslateExtension/startup.log` contains repeated `COM server started successfully.` entries |
 
@@ -48,6 +50,13 @@ dotnet msbuild .\PowerTranslateExtension\PowerTranslateExtension.csproj /restore
 Use this file in Partner Center:
 
 - `PowerTranslateExtension/AppPackages/PowerTranslateExtension_1.0.2.0_x64.msixupload`
+
+## GitHub Release Artifacts
+
+For local sideload installation, the `v1.0.2.0` GitHub release includes:
+
+- `PowerTranslateExtension_1.0.2.0_x64.msix`
+- `PowerTranslateExtension_1.0.2.0_x64.cer`
 
 ## Notes
 

@@ -35,12 +35,22 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 _Coming soon_ - App will be available on Microsoft Store. Link will be updated here upon release.
 
-### Manual Installation (Developer)
+### Manual Installation (Release package)
 
-1. Clone this repository
-2. Build the project in Visual Studio 2022
-3. Deploy using `Deploy Extension (Debug x64)` task
-4. Reload PowerToys Command Palette extensions
+1. Download `PowerTranslateExtension_1.0.2.0_x64.msix` and `PowerTranslateExtension_1.0.2.0_x64.cer` from the latest GitHub release.
+1. Import certificate in PowerShell:
+
+ ```powershell
+ Import-Certificate -FilePath ".\\PowerTranslateExtension_1.0.2.0_x64.cer" -CertStoreLocation "Cert:\\CurrentUser\\TrustedPeople"
+ ```
+
+1. Install package in PowerShell:
+
+ ```powershell
+ Add-AppxPackage -Path ".\\PowerTranslateExtension_1.0.2.0_x64.msix" -ForceUpdateFromAnyVersion
+ ```
+
+1. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
 
 ## How It Works
 
@@ -117,6 +127,15 @@ PowerTranslateExtension/
 - Ensure API key is not empty
 - Verify Windows can encrypt data (Windows Data Protection API must be available)
 - Run "Configure DeepL API key" command and try again
+
+**Install blocked with same-version content mismatch (`0x80073CFB`)?**
+- This happens when a package with the same identity/version was built from different contents (for example Debug vs Release).
+- Remove existing package, then install the signed Release package again:
+
+ ```powershell
+ Get-AppxPackage -Name "lamteteeow.PowerTranslate" | Remove-AppxPackage
+ Add-AppxPackage -Path ".\\PowerTranslateExtension_1.0.2.0_x64.msix"
+ ```
 
 ## Privacy
 
