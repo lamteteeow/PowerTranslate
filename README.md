@@ -4,7 +4,7 @@
  <img src="PowerTranslateExtension/Assets/PowerTranslateLogo.png" alt="PowerTranslate Logo" width="280" />
 </p>
 
-A lightweight, feature-rich translation extension for Microsoft PowerToys Command Palette, powered by DeepL API.
+A lightweight translation extension for Microsoft PowerToys Command Palette via DeepL API.
 
 ## Overview
 
