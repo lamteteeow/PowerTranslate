@@ -1,5 +1,6 @@
 param(
-    [string]$AssetsPath = "$PSScriptRoot\..\PowerTranslateExtension\Assets"
+    [string]$AssetsPath = "$PSScriptRoot\..\PowerTranslateExtension\Assets",
+    [string]$ManifestPath = "$PSScriptRoot\..\PowerTranslateExtension\Package.appxmanifest"
 )
 
 $ErrorActionPreference = "Stop"
@@ -48,6 +49,53 @@ foreach ($asset in $requiredAssets) {
         if ($null -ne $img) {
             $img.Dispose()
         }
+    }
+}
+
+if (-not (Test-Path $ManifestPath)) {
+    $failures.Add("Manifest not found: $ManifestPath")
+}
+else {
+    try {
+        [xml]$manifestXml = Get-Content -Path $ManifestPath
+
+        $identityVersion = $manifestXml.Package.Identity.Version
+        if ([string]::IsNullOrWhiteSpace($identityVersion)) {
+            $failures.Add("Manifest Identity.Version is missing")
+        }
+        elseif ($identityVersion -notmatch '^\d+\.\d+\.\d+\.0$') {
+            $failures.Add("Manifest Identity.Version must use revision 0 for Store submissions. Current: $identityVersion")
+        }
+
+        $comServer = $manifestXml.Package.Applications.Application.Extensions.Extension |
+        Where-Object { $_.Category -eq 'windows.comServer' } |
+        Select-Object -First 1
+
+        if (-not $comServer) {
+            $failures.Add("Missing windows.comServer extension in manifest")
+        }
+
+        $appExtension = $manifestXml.Package.Applications.Application.Extensions.Extension |
+        Where-Object { $_.Category -eq 'windows.appExtension' } |
+        Select-Object -First 1
+
+        if (-not $appExtension) {
+            $failures.Add("Missing windows.appExtension registration in manifest")
+        }
+        else {
+            $appExtName = $appExtension.AppExtension.Name
+            if ($appExtName -ne 'com.microsoft.commandpalette') {
+                $failures.Add("AppExtension Name must be 'com.microsoft.commandpalette'. Current: $appExtName")
+            }
+
+            $classId = $appExtension.AppExtension.Properties.CmdPalProvider.Activation.CreateInstance.ClassId
+            if ([string]::IsNullOrWhiteSpace($classId)) {
+                $failures.Add("CmdPalProvider Activation.CreateInstance ClassId is missing")
+            }
+        }
+    }
+    catch {
+        $failures.Add("Unable to parse manifest file: $ManifestPath")
     }
 }
 

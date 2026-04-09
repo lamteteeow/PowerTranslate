@@ -20,69 +20,95 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
     public PowerTranslateExtensionCommandsProvider()
     {
         var settingsStore = new LocalSettingsStore();
-        var translator = new DeepLTranslator(settingsStore);
         var settings = new Settings();
-        var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
-        var targetLanguage = LocalSettingsStore.GetTargetLanguage();
-        var (sourceLanguageChoices, targetLanguageChoices) = translator.GetSupportedLanguageChoices();
 
-        EnsureChoicePresent(sourceLanguageChoices, sourceLanguage);
-        EnsureChoicePresent(targetLanguageChoices, targetLanguage);
-
-        var hasLanguageChoices = sourceLanguageChoices.Count > 0 && targetLanguageChoices.Count > 0;
-
-        if (hasLanguageChoices)
+        try
         {
-            var sourceLanguageSetting = new ChoiceSetSetting(
-                SourceLanguageSettingKey,
-                "Input language",
-                "Language you are translating from.",
-                sourceLanguageChoices)
-            {
-                Value = sourceLanguage
-            };
+            var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
+            var targetLanguage = LocalSettingsStore.GetTargetLanguage();
 
-            var targetLanguageSetting = new ChoiceSetSetting(
-                TargetLanguageSettingKey,
-                "Target language",
-                "Language to translate into.",
-                targetLanguageChoices)
-            {
-                Value = targetLanguage
-            };
+            // Startup must remain resilient and quick. Avoid network work here.
+            var (sourceLanguageChoices, targetLanguageChoices) = DeepLTranslator.GetCachedSupportedLanguageChoices();
+            EnsureChoicePresent(sourceLanguageChoices, sourceLanguage);
+            EnsureChoicePresent(targetLanguageChoices, targetLanguage);
 
-            settings.Add(sourceLanguageSetting);
-            settings.Add(targetLanguageSetting);
-            settings.SettingsChanged += (_, updatedSettings) =>
+            var hasLanguageChoices = sourceLanguageChoices.Count > 1 && targetLanguageChoices.Count > 0;
+            if (hasLanguageChoices)
             {
-                if (updatedSettings.TryGetSetting<string>(SourceLanguageSettingKey, out var sourceLanguage))
+                var sourceLanguageSetting = new ChoiceSetSetting(
+                    SourceLanguageSettingKey,
+                    "Input language",
+                    "Language you are translating from.",
+                    sourceLanguageChoices)
                 {
-                    settingsStore.SaveSourceLanguage(sourceLanguage);
-                }
+                    Value = sourceLanguage
+                };
 
-                if (updatedSettings.TryGetSetting<string>(TargetLanguageSettingKey, out var targetLanguage))
+                var targetLanguageSetting = new ChoiceSetSetting(
+                    TargetLanguageSettingKey,
+                    "Target language",
+                    "Language to translate into.",
+                    targetLanguageChoices)
                 {
-                    settingsStore.SaveTargetLanguage(targetLanguage);
-                }
-            };
+                    Value = targetLanguage
+                };
+
+                settings.Add(sourceLanguageSetting);
+                settings.Add(targetLanguageSetting);
+                settings.SettingsChanged += (_, updatedSettings) =>
+                {
+                    if (updatedSettings.TryGetSetting<string>(SourceLanguageSettingKey, out var savedSourceLanguage))
+                    {
+                        settingsStore.SaveSourceLanguage(savedSourceLanguage);
+                    }
+
+                    if (updatedSettings.TryGetSetting<string>(TargetLanguageSettingKey, out var savedTargetLanguage))
+                    {
+                        settingsStore.SaveTargetLanguage(savedTargetLanguage);
+                    }
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            StartupLog.Error("PowerTranslate: failed to initialize settings.", ex);
         }
 
         Settings = settings;
-
         DisplayName = "Power Translate";
-        Icon = IconHelpers.FromRelativePath("Assets\\PowerTranslateLogo.png");
-        _commands = [
-            new CommandItem(new DeepLSettingsPage())
+
+        try
+        {
+            Icon = IconHelpers.FromRelativePath("Assets\\PowerTranslateLogo.png");
+        }
+        catch (Exception ex)
+        {
+            StartupLog.Error("PowerTranslate: failed to load icon.", ex);
+        }
+
+        var commands = new List<ICommandItem>();
+        TryAddCommand(commands, () => new CommandItem(new DeepLSettingsPage())
+        {
+            Title = "Configure DeepL API key",
+            Subtitle = "Password-masked input with validation"
+        });
+        TryAddCommand(commands, () => new CommandItem(new PowerTranslateExtensionPage())
+        {
+            Title = "Translate text",
+            Subtitle = "Translate with configured source and target languages"
+        });
+
+        if (commands.Count == 0)
+        {
+            commands.Add(new CommandItem(new StartupUnavailableCommand())
             {
-                Title = "Configure DeepL API key",
-                Subtitle = "Password-masked input with validation"
-            },
-            new CommandItem(new PowerTranslateExtensionPage())
-            {
-                Title = "Translate text",
-                Subtitle = "Translate with configured source and target languages"
-            }
-        ];
+                Title = "PowerTranslate unavailable",
+                Subtitle = "Startup failed. Check %LocalAppData%\\PowerTranslateExtension\\startup.log"
+            });
+            StartupLog.Error("PowerTranslate: no commands available after startup. Added fallback command.");
+        }
+
+        _commands = [.. commands];
     }
 
     public override ICommandItem[] TopLevelCommands()
@@ -92,6 +118,11 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
 
     private static void EnsureChoicePresent(List<ChoiceSetSetting.Choice> choices, string selectedValue)
     {
+        if (string.IsNullOrWhiteSpace(selectedValue))
+        {
+            return;
+        }
+
         if (choices.Any(choice => string.Equals(choice.Value, selectedValue, StringComparison.OrdinalIgnoreCase)))
         {
             return;
@@ -105,6 +136,35 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
         };
 
         choices.Insert(0, new ChoiceSetSetting.Choice(displayTitle, selectedValue));
+    }
+
+    private static void TryAddCommand(List<ICommandItem> commands, Func<ICommandItem> createCommand)
+    {
+        try
+        {
+            commands.Add(createCommand());
+        }
+        catch (Exception ex)
+        {
+            StartupLog.Error("PowerTranslate: failed to create command.", ex);
+        }
+    }
+
+    private sealed partial class StartupUnavailableCommand : InvokableCommand
+    {
+        public StartupUnavailableCommand()
+        {
+            Name = "Startup diagnostics";
+        }
+
+        public override ICommandResult Invoke()
+        {
+            return CommandResult.ShowToast(new ToastArgs
+            {
+                Message = "PowerTranslate startup failed. See startup.log in %LocalAppData%\\PowerTranslateExtension.",
+                Result = CommandResult.KeepOpen(),
+            });
+        }
     }
 
 }

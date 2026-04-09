@@ -14,22 +14,23 @@
    - Install from Microsoft Store: <https://apps.microsoft.com/detail/xp89dcgq3k6vld>
    - Ensure Command Palette is enabled in PowerToys
 2. **PowerTranslate package**
-   - Use the release bundle: `PowerTranslateExtension_1.0.0.1_Bundle.msixbundle`
+   - Use the x64 package: `PowerTranslateExtension_1.0.2.0_x64.msix`
 
 ### Package Scope
 
-- Current release validation scope is **x64 only**
-- Use release packages for final verification
-- Use debug deploy only for local development verification
-- ARM64 can be validated as a **build/package check** where environment allows
+- PowerTranslate currently supports **x64 only**
+- ARM64 is not supported in this release
+- End-user validation was completed on **x64**
+- Test using the provided **x64 package** only
 
 ### DeepL Account
 
 You need a DeepL API key before the app can translate text.
+For the sake of testing, a DeepL API key is provided for this submission.
 
+(Optional): Generate your own API key
 1. Create or sign in to a DeepL account at <https://www.deepl.com/>
 2. Get an API key from the DeepL account dashboard
-3. Keep the key handy for the setup step below
 
 ## Installation Steps
 
@@ -42,28 +43,9 @@ You need a DeepL API key before the app can translate text.
 
 ### Step 2: Install PowerTranslate
 
-1. Open the release bundle in File Explorer or run it directly with App Installer
-2. If the bundle was copied into package output, it will be under `PowerTranslateExtension/AppPackages/..._x64_Test/`
-3. Approve the certificate prompt if Windows asks for it
-4. Finish the install wizard
-
-### Optional: Developer Deploy Path (Debug x64)
-
-For local validation builds only:
-
-1. Run VS Code task: `Deploy Extension (Debug x64)`
-2. Wait for deployment to finish
-3. Restart or reload Command Palette extensions
-
-### Optional: ARM64 Build Validation (Where Possible)
-
-Use this when you want to verify ARM64 packaging output on a development machine:
-
-1. Open PowerShell in repo root
-2. Run:
-   `dotnet msbuild .\PowerTranslateExtension\PowerTranslateExtension.csproj /restore /p:Configuration=Debug /p:Platform=ARM64 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false /v:m`
-3. Confirm build succeeds and output is generated under `PowerTranslateExtension/AppPackages/..._arm64_Debug_Test/`
-4. If testing on an x64-only machine, treat this as a build verification only (not an install validation)
+1. Open the `PowerTranslateExtension_1.0.2.0_x64.msix` package in File Explorer or run it directly with App Installer
+2. Approve the certificate prompt if Windows asks for it
+3. Finish the install wizard
 
 ### Step 3: Refresh PowerToys
 
@@ -75,24 +57,24 @@ Use this when you want to verify ARM64 packaging output on a development machine
 
 1. Open PowerTranslate from Command Palette
 2. Run `Configure DeepL API key`
-3. Paste in your DeepL API key
+3. Paste in the provided or your own DeepL API key
 4. Click `Save`
-5. If API key is valid, translation should be successful from here
-6. Run `Reload Command Palette extensions`
+5. Translation functionality should be successful with valid API key.
+6. (Optional) Run `Reload Command Palette extensions` once to update the fetched language selection list in Command Palette extension settings
 
 ## Testing the Extension
 
 ### Basic Functionality Test
 
 1. Open Command Palette
-2. Search for Translate or PowerTranslate
-3. Launch the translation command
-4. Enter text to translate
-5. Choose a source language or leave it on AUTO
-6. Choose a target language
-7. Verify the translated text is returned
-8. Confirm copy-to-clipboard works from the result view
-9. If translation fails, check that the DeepL key was entered correctly
+2. Search for `Translate text` and select
+3. Type in text to be translated
+4. Verify the translated text is returned in the info box
+5. Enter to copy text
+6. Confirm copy-to-clipboard works from the result view
+7. Choose a source language or leave it on AUTO
+8. Choose a target language
+9. If translation fails, follow shown error handling
 
 ### Settings and Persistence Test
 
@@ -118,7 +100,7 @@ Use this when you want to verify ARM64 packaging output on a development machine
 
 ## Expected Behavior
 
-- PowerTranslate appears in Command Palette after reload
+- `PowerTranslate` appears in Command Palette after reload
 - Translation requests complete successfully with a valid DeepL API key
 - Invalid API keys and network failures show clear messages
 - Language preferences persist across restarts
@@ -148,8 +130,8 @@ Use this when you want to verify ARM64 packaging output on a development machine
 ### Settings Not Persisting
 
 - Reload Command Palette extensions after changing settings
-- Check local cache files under `C:\Users\[User]\AppData\Local\Packages\PowerTranslateExtension_8wekyb3d8bbwe\LocalCache\Local\PowerTranslateExtension\`
-- Confirm `deepl.key`, `source-language.txt`, and `target-language.txt` are present
+- Check local cache files under `C:\Users\[User]\AppData\Local\Packages\lamteteeow.PowerTranslate_8x1cxbv97rw5g\LocalCache\Local\PowerTranslateExtension`
+- Confirm `deepl.key`, `source-language.txt`, and `target-language.txt` are present as cached.
 
 ## What to Test
 
@@ -161,7 +143,6 @@ Use this when you want to verify ARM64 packaging output on a development machine
 6. Language persistence across restarts
 7. AUTO source detection
 8. Copy-to-clipboard behavior
-9. ARM64 package build verification where environment supports ARM64 validation
 
 ## Reporting Issues
 
@@ -169,6 +150,5 @@ If you encounter problems, include:
 - Windows version and build number
 - PowerToys version
 - Exact error message
-- Which package file you installed
 - Steps to reproduce
 - Screenshots if applicable

@@ -1,6 +1,6 @@
 # PowerTranslate Extension
 
-![PowerTranslate Logo](PowerTranslateExtension/Assets/PowerTranslateLogo.png)
+<img src="PowerTranslateExtension/Assets/PowerTranslateLogo.png" alt="PowerTranslate Logo" width="280" />
 
 A lightweight, feature-rich translation extension for Microsoft PowerToys Command Palette, powered by DeepL API.
 
@@ -176,7 +176,7 @@ PowerTranslate communicates only with DeepL for translation requests and stores 
 
 ## Development Status
 
-**Status**: Stable v1.0.0 release
+**Status**: Stable v1.0.2.0 release
 
 Core translation functionality, language selection, and settings persistence are production-ready. Windows 10/11 support verified.
 

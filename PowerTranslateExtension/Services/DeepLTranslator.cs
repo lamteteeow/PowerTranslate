@@ -52,6 +52,19 @@ internal sealed class DeepLTranslator
         }
     }
 
+    public static (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) GetCachedSupportedLanguageChoices()
+    {
+        lock (LanguageChoicesCacheLock)
+        {
+            if (_cachedLanguageChoices is { } cached)
+            {
+                return CloneLanguageChoices(cached);
+            }
+        }
+
+        return EmptyLanguageChoices();
+    }
+
     public (List<ChoiceSetSetting.Choice> SourceChoices, List<ChoiceSetSetting.Choice> TargetChoices) ReloadSupportedLanguageChoices()
     {
         return GetSupportedLanguageChoices(forceReload: true);
@@ -227,7 +240,7 @@ internal sealed class DeepLTranslator
         return statusCode switch
         {
             System.Net.HttpStatusCode.Unauthorized or System.Net.HttpStatusCode.Forbidden =>
-                new TranslationResult(false, "Invalid DeepL API key. Check your credentials in 'Configure DeepL API key'."),
+                new TranslationResult(false, "Invalid DeepL API key. Check your credentials."),
             System.Net.HttpStatusCode.TooManyRequests =>
                 new TranslationResult(false, "DeepL request limit exceeded. Please wait a moment and try again."),
             System.Net.HttpStatusCode.BadRequest =>

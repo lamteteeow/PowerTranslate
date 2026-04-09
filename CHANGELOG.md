@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2.0] - 2026-04-09
+
+### Added
+
+- New x64 Store upload artifact `PowerTranslateExtension_1.0.2.0_x64.msixupload` for Partner Center submission.
+
+### Changed
+
+- Bumped app/package versioning to `1.0.2.0` across project and manifest.
+- Reduced README header logo display size for cleaner storefront/repository presentation.
+
+## [1.0.1.0] - 2026-04-08
+
+### Added
+
+- New x64 Store upload artifact `PowerTranslateExtension_1.0.1.0_x64.msixupload` for Partner Center submission.
+
+### Changed
+
+- Updated manifest and package versioning to Store-compliant `1.0.1.0` (revision set to `0`).
+- Tester guidance now explicitly states architecture support and validation scope.
+
+### Notes
+
+- x64 received end-user runtime validation.
+- ARM64 is excluded from this submission scope.
+
 ## [1.0.0.1] - 2026-04-08
 
 ### Added
@@ -19,7 +46,7 @@ All notable changes to this project will be documented in this file.
 
 - Clarified tester steps and troubleshooting wording for reload flow and local settings persistence.
 
-## [1.0.0] - 2026-04-07
+## [1.0.0.0] - 2026-04-07
 
 ### Added
 
