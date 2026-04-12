@@ -10,6 +10,7 @@ internal sealed class LocalSettingsStore
     private const string ApiKeyFileName = "deepl.key";
     private const string SourceLanguageFileName = "source-language.txt";
     private const string TargetLanguageFileName = "target-language.txt";
+    private const string RuntimeLoggingEnabledFileName = "runtime-logging.enabled";
     private const string DefaultSourceLanguage = "AUTO";
     private const string DefaultTargetLanguage = "EN";
 
@@ -61,6 +62,8 @@ internal sealed class LocalSettingsStore
                 File.Delete(_apiKeyPath);
             }
 
+            RuntimeLog.Info("LocalSettingsStore: API key removed.");
+
             return;
         }
 
@@ -69,6 +72,7 @@ internal sealed class LocalSettingsStore
         var plaintext = Encoding.UTF8.GetBytes(apiKey.Trim());
         var encrypted = ProtectedData.Protect(plaintext, optionalEntropy: null, DataProtectionScope.CurrentUser);
         File.WriteAllBytes(_apiKeyPath, encrypted);
+        RuntimeLog.Info("LocalSettingsStore: API key saved.");
     }
 
     public static string GetSourceLanguage()
@@ -84,6 +88,44 @@ internal sealed class LocalSettingsStore
         lock (CacheLock)
         {
             return _targetLanguage;
+        }
+    }
+
+    public static bool GetRuntimeLoggingEnabled()
+    {
+        var settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PowerTranslateExtension");
+        var path = Path.Combine(settingsDirectory, RuntimeLoggingEnabledFileName);
+
+        try
+        {
+            if (!File.Exists(path))
+            {
+                return true;
+            }
+
+            var value = File.ReadAllText(path).Trim();
+            return !string.Equals(value, "0", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(value, "false", StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return true;
+        }
+    }
+
+    public static void SaveRuntimeLoggingEnabled(bool enabled)
+    {
+        var settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PowerTranslateExtension");
+        var path = Path.Combine(settingsDirectory, RuntimeLoggingEnabledFileName);
+
+        try
+        {
+            Directory.CreateDirectory(settingsDirectory);
+            File.WriteAllText(path, enabled ? "1" : "0");
+        }
+        catch
+        {
+            // Never fail app flow if runtime logging preference cannot be persisted.
         }
     }
 
@@ -140,8 +182,9 @@ internal sealed class LocalSettingsStore
             var value = NormalizeLanguageCode(File.ReadAllText(path));
             return IsSupportedLanguage(value, allowAuto) ? value : fallback;
         }
-        catch
+        catch (Exception ex)
         {
+            RuntimeLog.Error($"LocalSettingsStore: failed to read language from {Path.GetFileName(path)}.", ex);
             return fallback;
         }
     }

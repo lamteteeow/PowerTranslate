@@ -16,6 +16,9 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
     private readonly ICommandItem[] _commands;
     private const string SourceLanguageSettingKey = "DeepL.SourceLanguage";
     private const string TargetLanguageSettingKey = "DeepL.TargetLanguage";
+    private const string RuntimeLoggingSettingKey = "PowerTranslate.RuntimeLogging";
+    private const string RuntimeLoggingEnabledValue = "enabled";
+    private const string RuntimeLoggingDisabledValue = "disabled";
 
     public PowerTranslateExtensionCommandsProvider()
     {
@@ -26,9 +29,35 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
         {
             var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
             var targetLanguage = LocalSettingsStore.GetTargetLanguage();
+            var runtimeLoggingEnabled = LocalSettingsStore.GetRuntimeLoggingEnabled();
+
+            var runtimeLoggingChoices = new List<ChoiceSetSetting.Choice>
+            {
+                new("Enabled", RuntimeLoggingEnabledValue),
+                new("Disabled", RuntimeLoggingDisabledValue),
+            };
+
+            var runtimeLoggingSetting = new ChoiceSetSetting(
+                RuntimeLoggingSettingKey,
+                "Runtime logging",
+                "Enable or disable runtime diagnostics logging.",
+                runtimeLoggingChoices)
+            {
+                Value = runtimeLoggingEnabled ? RuntimeLoggingEnabledValue : RuntimeLoggingDisabledValue
+            };
+
+            settings.Add(runtimeLoggingSetting);
 
             // Startup must remain resilient and quick. Avoid network work here.
             var (sourceLanguageChoices, targetLanguageChoices) = DeepLTranslator.GetCachedSupportedLanguageChoices();
+
+            // If cache is empty but API key exists, do a best-effort reload so settings are visible.
+            if (sourceLanguageChoices.Count == 0 || targetLanguageChoices.Count == 0)
+            {
+                var translator = new DeepLTranslator(settingsStore);
+                (sourceLanguageChoices, targetLanguageChoices) = translator.GetSupportedLanguageChoices(forceReload: true);
+            }
+
             EnsureChoicePresent(sourceLanguageChoices, sourceLanguage);
             EnsureChoicePresent(targetLanguageChoices, targetLanguage);
 
@@ -65,6 +94,23 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
                     if (updatedSettings.TryGetSetting<string>(TargetLanguageSettingKey, out var savedTargetLanguage))
                     {
                         settingsStore.SaveTargetLanguage(savedTargetLanguage);
+                    }
+
+                    if (updatedSettings.TryGetSetting<string>(RuntimeLoggingSettingKey, out var runtimeLoggingSelection))
+                    {
+                        var enabled = string.Equals(runtimeLoggingSelection, RuntimeLoggingEnabledValue, StringComparison.OrdinalIgnoreCase);
+                        RuntimeLog.SetEnabled(enabled);
+                    }
+                };
+            }
+            else
+            {
+                settings.SettingsChanged += (_, updatedSettings) =>
+                {
+                    if (updatedSettings.TryGetSetting<string>(RuntimeLoggingSettingKey, out var runtimeLoggingSelection))
+                    {
+                        var enabled = string.Equals(runtimeLoggingSelection, RuntimeLoggingEnabledValue, StringComparison.OrdinalIgnoreCase);
+                        RuntimeLog.SetEnabled(enabled);
                     }
                 };
             }

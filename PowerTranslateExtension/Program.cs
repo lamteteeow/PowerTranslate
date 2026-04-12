@@ -6,15 +6,23 @@ using Microsoft.CommandPalette.Extensions;
 using Shmuelie.WinRTServer;
 using Shmuelie.WinRTServer.CsWinRT;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace PowerTranslateExtension;
 
 public class Program
 {
+    [DllImport("user32.dll")]
+    private static extern bool SetProcessDpiAwarenessContext(nint dpiFlag);
+
+    private static readonly nint DpiAwarenessContextPerMonitorAwareV2 = new(-4);
+
     [MTAThread]
     public static void Main(string[] args)
     {
+        TryEnablePerMonitorV2DpiAwareness();
+
         try
         {
             if (args.Length > 0 && args[0] == "-RegisterProcessAsComServer")
@@ -44,7 +52,7 @@ public class Program
                 catch (Exception ex)
                 {
                     StartupLog.Error("COM server activation failed.", ex);
-                    throw;
+                    return;
                 }
             }
             else
@@ -56,7 +64,19 @@ public class Program
         catch (Exception ex)
         {
             StartupLog.Error("Unhandled startup exception.", ex);
-            throw;
+            return;
+        }
+    }
+
+    private static void TryEnablePerMonitorV2DpiAwareness()
+    {
+        try
+        {
+            _ = SetProcessDpiAwarenessContext(DpiAwarenessContextPerMonitorAwareV2);
+        }
+        catch
+        {
+            // Never fail extension startup due to DPI API availability.
         }
     }
 }

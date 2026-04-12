@@ -10,17 +10,6 @@ A lightweight translation extension for Microsoft PowerToys Command Palette via 
 
 PowerTranslate brings fast, accurate translation directly into your PowerToys Command Palette workflow. Open the Command Palette, search for "Translate", and instantly translate text between 30+ language pairs using DeepL's industry-leading neural translation engine.
 
-## Key Features
-
-- **Quick Translation**: Translate text directly from the Command Palette with automatic language detection
-- **Multi-Language Support**: Support for 30+ languages via DeepL API, with intelligent AUTO-detection for source language
-- **Flexible Language Selection**: Easily switch source and target languages with an intuitive picker interface
-- **Persistent Settings**: Source/target language preferences saved between sessions for seamless workflow
-- **API Key Management**: Built-in configuration page for secure, encrypted DeepL API key storage
-- **Cached Language Lists**: Efficient language list caching to minimize API calls
-- **Lightweight Design**: Minimal dependencies, optimized for responsiveness
-- **Copy-Friendly Results**: Translation results display with source→target language indicator for clarity
-
 ## Requirements
 
 - **OS**: Windows 10 Build 19041 or later, or Windows 11
@@ -31,26 +20,30 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 ## Installation
 
+### From Winget (Recommended)
+
+_Coming soon_
+
 ### From Microsoft Store (Recommended)
 
-_Coming soon_ - App will be available on Microsoft Store. Link will be updated here upon release.
+_Coming soon_
 
 ### Manual Installation (Release package)
 
 1. Download `PowerTranslateExtension_1.0.2.0_x64.msix` and `PowerTranslateExtension_1.0.2.0_x64.cer` from the latest GitHub release.
-1. Import certificate in PowerShell:
+2. Import certificate in PowerShell:
 
  ```powershell
  Import-Certificate -FilePath ".\\PowerTranslateExtension_1.0.2.0_x64.cer" -CertStoreLocation "Cert:\\CurrentUser\\TrustedPeople"
  ```
 
-1. Install package in PowerShell:
+3. Install package in PowerShell:
 
  ```powershell
  Add-AppxPackage -Path ".\\PowerTranslateExtension_1.0.2.0_x64.msix" -ForceUpdateFromAnyVersion
  ```
 
-1. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
+4. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
 
 ## How It Works
 
@@ -85,26 +78,6 @@ After installation, use the "Configure DeepL API key" command in the palette to:
 - Save encrypted key for future use
 
 > **Note**: After setting the API key, reload Command Palette extensions to refresh language choices. Use `Ctrl+Shift+P` and search "Reload Command Palette extensions".
-
-## Architecture
-
-```text
-PowerTranslateExtension/
-├── Services/
-│   ├── DeepLTranslator.cs       # DeepL API integration with language caching
-│   └── LocalSettingsStore.cs    # Encrypted key storage & language preferences
-├── Pages/
-│   ├── PowerTranslateExtensionPage.cs  # Main translation UI
-│   └── DeepLSettingsPage.cs            # API key configuration
-└── PowerTranslateExtensionCommandsProvider.cs  # Extension entry point
-```
-
-### Key Components
-
-- **DeepLTranslator**: Handles all API communication, language list caching, and translation requests with metadata
-- **LocalSettingsStore**: Manages encrypted API key storage and language preference persistence with thread-safe caching
-- **PowerTranslateExtensionPage**: Interactive translation page with copy button and language picker navigation
-- **DeepLSettingsPage**: Configuration form for API key setup and validation
 
 ## Troubleshooting
 
@@ -164,36 +137,6 @@ See [PRIVACY.md](PRIVACY.md) for the formal policy used for release and store su
 - No personal data collected or stored
 - No third-party tracking
 - Users have full control over API key and language settings
-
-## Microsoft Store Submission Copy
-
-### Concise Description (50 words)
-
-PowerTranslate brings DeepL-powered translation directly into PowerToys Command Palette. Translate text instantly with automatic source detection, flexible source/target language selection, and encrypted local API key storage. Built for speed, privacy, and daily workflow efficiency on Windows 10 and Windows 11.
-
-### Detailed Description
-
-PowerTranslate is a productivity-focused translation extension for Microsoft PowerToys Command Palette. It allows you to translate text without leaving your keyboard-driven workflow. Choose source and target languages, or enable AUTO source detection to let DeepL identify input language automatically.
-
-The extension includes encrypted local storage for your DeepL API key using Windows Data Protection API, plus persistent language preferences so your most-used settings are ready every session. It is designed to be lightweight, responsive, and practical for developers, writers, support teams, and multilingual users.
-
-Key benefits include:
-- Fast translation from Command Palette
-- 30+ supported language pairs through DeepL
-- On-the-fly source/target switching
-- Clear source to target indicator in translation results
-- No telemetry, no analytics, and no third-party tracking
-
-PowerTranslate communicates only with DeepL for translation requests and stores only what is needed for operation. This makes it a focused utility for users who want high-quality translation with minimal friction and strong privacy defaults.
-
-### Suggested Store Categories and Tags
-
-- Categories: Productivity, Utilities
-- Tags: translation, language, deepl, command palette, powertoys
-
-### Support Contact
-
-- GitHub Issues: <https://github.com/lamteteeow/PowerTranslateExtension/issues>
 
 ## Development Status
 
