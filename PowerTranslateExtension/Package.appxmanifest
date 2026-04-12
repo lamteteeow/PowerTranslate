@@ -6,12 +6,13 @@
   xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap uap3 rescap">
+  xmlns:amd64="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/amd64"
+  IgnorableNamespaces="uap uap3 rescap amd64">
 
   <Identity
     Name="lamteteeow.PowerTranslate"
     Publisher="CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2"
-    Version="1.0.2.0" />
+    Version="1.1.0.0" />
 
   <Properties>
     <DisplayName>Power Translate</DisplayName>
@@ -20,7 +21,6 @@
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26200.0" />
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26200.0" />
   </Dependencies>
 
@@ -41,6 +41,7 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <amd64:DpiAware>true</amd64:DpiAware>
       <Extensions>
         <com:Extension Category="windows.comServer">
           <com:ComServer>

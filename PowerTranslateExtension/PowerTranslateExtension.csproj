@@ -3,10 +3,10 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PowerTranslateExtension</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
 
-    <WindowsSdkPackageVersion>10.0.26100.68-preview</WindowsSdkPackageVersion>
+    <WindowsSdkPackageVersion>10.0.26100.84</WindowsSdkPackageVersion>
     <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
@@ -14,8 +14,9 @@
 
     <AppxPackageIdentityName>lamteteeow.PowerTranslate</AppxPackageIdentityName>
     <AppxPackagePublisher>CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2</AppxPackagePublisher>
-    <AppxPackageVersion>1.0.2.0</AppxPackageVersion>
+    <AppxPackageVersion>1.1.0.0</AppxPackageVersion>
 
+    <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
@@ -83,14 +84,16 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PublishSingleFile>true</PublishSingleFile>
+    <PublishSingleFile>false</PublishSingleFile>
     <IsAotCompatible>true</IsAotCompatible>
 
     <CsWinRTAotOptimizerEnabled>true</CsWinRTAotOptimizerEnabled>
     <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel>
-    <!-- Trimming disabled for MSIX packaged desktop app -->
-    <PublishTrimmed>false</PublishTrimmed>
+    <!-- Suppress DynamicallyAccessedMemberTypes.PublicParameterlessConstructor in fallback code path of Windows SDK projection -->
+    <WarningsNotAsErrors>IL2081;$(WarningsNotAsErrors)</WarningsNotAsErrors>
 
+    <!-- When publishing trimmed, make sure to treat trimming warnings as build errors -->
+    <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -105,14 +108,14 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'!='Debug'">
-    <!-- Release builds: optimize deployment footprint -->
+    <!-- Release builds: prioritize runtime compatibility for certification -->
     <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <DebuggerSupport>false</DebuggerSupport>
-    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
-    <EventSourceSupport>false</EventSourceSupport>
-    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <!-- <PublishSingleFile>true</PublishSingleFile> -->
+    <!-- In release, also ignore the aforementioned ILLink warning -->
+    <ILLinkTreatWarningsAsErrors>false</ILLinkTreatWarningsAsErrors>
+    <!-- Package signing for Release builds -->
+    <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>C6F2378D24E0B1769854EA711D475171A6CABCC6</PackageCertificateThumbprint>
   </PropertyGroup>
 
 

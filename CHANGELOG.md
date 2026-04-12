@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0.0] - 2026-04-12
+
+### Added
+
+- Runtime logging can now be enabled or disabled from the extension settings.
+
+### Changed
+
+- Restored source and target language selectors in the extension settings panel.
+- Moved runtime logging preference storage into `LocalSettingsStore`.
+
+### Fixed
+
+- Stabilized the DeepL settings page rendering path after the runtime logging changes.
+
 ## [1.0.2.0] - 2026-04-09
 
 ### Added
@@ -13,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - Bumped app/package versioning to `1.0.2.0` across project and manifest.
 - Reduced README header logo display size for cleaner storefront/repository presentation.
 - Updated installation documentation to prefer signed Release `.msix` + `.cer` flow.
+- Clarified platform scope to desktop-only and explicitly documented that Windows 10 S is not supported.
 
 ### Fixed
 
