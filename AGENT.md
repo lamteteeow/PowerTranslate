@@ -10,8 +10,11 @@ This file defines the working standards followed for this repository.
 
 ## Branch and Commit Workflow
 
-- Work on `dev` by default.
-- Merge to `main` only for reviewed release-ready changes.
+- Work on `dev` for all active development.
+- Do not do feature or fix development directly on `main`.
+- Keep `dev` up to date with `main` before starting new work when release commits were added to `main`.
+- Use `main` only as the final release branch.
+- Merge to `main` only for reviewed, release-ready changes.
 - Make small, focused commits for each milestone.
 - Do not revert unrelated user changes.
 - If local and remote diverge, prefer `git pull --rebase` to keep history linear.
@@ -59,6 +62,15 @@ This file defines the working standards followed for this repository.
 - GitHub Release title naming is required:
   - `PowerTranslate v<version>`
   - Example: `PowerTranslate v1.0.0.1`
+
+## GitHub Release Notes
+
+- Keep GitHub release bodies minimal and consistent.
+- Prefer a single `**Full Changelog**:` line that links the compare view for the release range.
+- Match the style used by `v1.0.2.0` for all future releases.
+- Do not use freeform release prose unless the user explicitly asks for it.
+- If a release already exists with the wrong body, edit the published release instead of creating a duplicate.
+- For the first release in a line, use the best available left-side anchor for the compare link if there is no prior tag.
 
 ## Asset and File Naming Convention
 
