@@ -13,10 +13,12 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 ## Requirements
 
 - **OS**: Windows 10 Build 19041 or later, or Windows 11
-- **PowerToys**: Latest version with Command Palette support
+- **PowerToys**: Latest version with Command Palette support from [Microsoft PowerToys on GitHub](https://github.com/microsoft/PowerToys)
+- **Command Palette**: Enabled inside PowerToys; see the [Command Palette section in the PowerToys GitHub repo](https://github.com/microsoft/PowerToys#-utilities)
 - **.NET**: .NET 9.0 (included in packaged app)
 - **DeepL API Key**: Free or paid account at [deepl.com](https://www.deepl.com/docs-api/accessing-the-api)
 - **Architecture**: x64 (AMD64) only
+- **Windows 10 S**: Not supported (desktop full-trust extension model)
 
 ## Installation
 
@@ -30,20 +32,23 @@ _Coming soon_
 
 ### Manual Installation (Release package)
 
-1. Download `PowerTranslateExtension_1.0.2.0_x64.msix` and `PowerTranslateExtension_1.0.2.0_x64.cer` from the latest GitHub release.
-2. Import certificate in PowerShell:
+> **Important**: Windows 10 S is not supported.
+
+1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest) and download the signed Release package assets.
+2. Install or update [PowerToys from GitHub](https://github.com/microsoft/PowerToys) and make sure [Command Palette](https://github.com/microsoft/PowerToys#-utilities) is enabled.
+3. Import the certificate in PowerShell:
 
  ```powershell
- Import-Certificate -FilePath ".\\PowerTranslateExtension_1.0.2.0_x64.cer" -CertStoreLocation "Cert:\\CurrentUser\\TrustedPeople"
+ Import-Certificate -FilePath ".\\<downloaded-package>.cer" -CertStoreLocation "Cert:\\CurrentUser\\TrustedPeople"
  ```
 
-3. Install package in PowerShell:
+1. Install the package in PowerShell:
 
  ```powershell
- Add-AppxPackage -Path ".\\PowerTranslateExtension_1.0.2.0_x64.msix" -ForceUpdateFromAnyVersion
+ Add-AppxPackage -Path ".\\<downloaded-package>.msix" -ForceUpdateFromAnyVersion
  ```
 
-4. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
+1. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
 
 ## How It Works
 
@@ -107,7 +112,7 @@ After installation, use the "Configure DeepL API key" command in the palette to:
 
  ```powershell
  Get-AppxPackage -Name "lamteteeow.PowerTranslate" | Remove-AppxPackage
- Add-AppxPackage -Path ".\\PowerTranslateExtension_1.0.2.0_x64.msix"
+ Add-AppxPackage -Path ".\\<downloaded-package>.msix"
  ```
 
 ## Privacy
@@ -140,7 +145,7 @@ See [PRIVACY.md](PRIVACY.md) for the formal policy used for release and store su
 
 ## Development Status
 
-**Status**: Stable v1.0.2.0 release
+**Status**: Stable v1.1.0.0 release
 
 Core translation functionality, language selection, and settings persistence are production-ready. Windows 10/11 support verified.
 
@@ -148,6 +153,7 @@ Core translation functionality, language selection, and settings persistence are
 
 - **x64 (Windows host)**: Build, package, install, and extension startup verified.
 - **ARM64 support**: Not targeted in this release.
+- **Windows 10 S support**: Not supported in this release.
 
 ## Contributing
 

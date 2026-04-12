@@ -14,14 +14,7 @@
    - Install from Microsoft Store: <https://apps.microsoft.com/detail/xp89dcgq3k6vld>
    - Ensure Command Palette is enabled in PowerToys
 2. **PowerTranslate package**
-   - Use the x64 package: `PowerTranslateExtension_1.0.2.0_x64.msix`
-
-### Package Scope
-
-- PowerTranslate currently supports **x64 only**
-- ARM64 is not supported in this release
-- End-user validation was completed on **x64**
-- Test using the provided **x64 package** only
+   - Use the x64 package: `PowerTranslateExtension_1.1.0.0_x64.msix`
 
 ### DeepL Account
 
@@ -43,8 +36,8 @@ For the sake of testing, a DeepL API key is provided for this submission.
 
 ### Step 2: Install PowerTranslate
 
-1. Import `PowerTranslateExtension_1.0.2.0_x64.cer` to `CurrentUser\\TrustedPeople`.
-2. Open the `PowerTranslateExtension_1.0.2.0_x64.msix` package in File Explorer or run it directly with App Installer.
+1. Import `PowerTranslateExtension_1.1.0.0_x64.cer` to `CurrentUser\\TrustedPeople`.
+2. Open the `PowerTranslateExtension_1.1.0.0_x64.msix` package in File Explorer or run it directly with App Installer.
 3. Approve the certificate prompt if Windows asks for it.
 4. Finish the install wizard.
 
@@ -115,19 +108,11 @@ For the sake of testing, a DeepL API key is provided for this submission.
 - Run `Reload Command Palette extensions`
 - Verify the package installed successfully in Windows Settings > Apps
 
-### Install Fails
-
-- Make sure the bundle is signed with the current publisher certificate
-- Reinstall the certificate if Windows asks for trust approval
-- Use an elevated PowerShell session if certificate trust prompts fail
-- If Windows reports `0x80073CFB` (same identity, different contents), remove the existing package and reinstall the release `.msix`
-
 ### Translation Does Not Work
 
 - Check the DeepL API key
 - Verify internet connectivity
 - Confirm the target language is supported
-- Confirm your DeepL plan supports the feature and usage limits are not exceeded
 
 ### Settings Not Persisting
 
