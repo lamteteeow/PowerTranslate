@@ -50,6 +50,8 @@ _Coming soon_
 
 1. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
 
+> **Behavior by design**: PowerTranslate is Command Palette-only and is hidden from the Start menu app list.
+
 ## How It Works
 
 1. Open PowerToys Command Palette
@@ -145,7 +147,7 @@ See [PRIVACY.md](PRIVACY.md) for the formal policy used for release and store su
 
 ## Development Status
 
-**Status**: Stable v1.1.1.0 release
+**Status**: Stable v1.1.2.0 release
 
 Core translation functionality, language selection, and settings persistence are production-ready. Windows 10/11 support verified.
 

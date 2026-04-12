@@ -17,8 +17,6 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
     private const string SourceLanguageSettingKey = "DeepL.SourceLanguage";
     private const string TargetLanguageSettingKey = "DeepL.TargetLanguage";
     private const string RuntimeLoggingSettingKey = "PowerTranslate.RuntimeLogging";
-    private const string RuntimeLoggingEnabledValue = "enabled";
-    private const string RuntimeLoggingDisabledValue = "disabled";
 
     public PowerTranslateExtensionCommandsProvider()
     {
@@ -30,23 +28,6 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
             var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
             var targetLanguage = LocalSettingsStore.GetTargetLanguage();
             var runtimeLoggingEnabled = LocalSettingsStore.GetRuntimeLoggingEnabled();
-
-            var runtimeLoggingChoices = new List<ChoiceSetSetting.Choice>
-            {
-                new("Enabled", RuntimeLoggingEnabledValue),
-                new("Disabled", RuntimeLoggingDisabledValue),
-            };
-
-            var runtimeLoggingSetting = new ChoiceSetSetting(
-                RuntimeLoggingSettingKey,
-                "Runtime logging",
-                "Enable or disable runtime diagnostics logging.",
-                runtimeLoggingChoices)
-            {
-                Value = runtimeLoggingEnabled ? RuntimeLoggingEnabledValue : RuntimeLoggingDisabledValue
-            };
-
-            settings.Add(runtimeLoggingSetting);
 
             // Startup must remain resilient and quick. Avoid network work here.
             var (sourceLanguageChoices, targetLanguageChoices) = DeepLTranslator.GetCachedSupportedLanguageChoices();
@@ -84,36 +65,34 @@ public partial class PowerTranslateExtensionCommandsProvider : CommandProvider
 
                 settings.Add(sourceLanguageSetting);
                 settings.Add(targetLanguageSetting);
-                settings.SettingsChanged += (_, updatedSettings) =>
-                {
-                    if (updatedSettings.TryGetSetting<string>(SourceLanguageSettingKey, out var savedSourceLanguage))
-                    {
-                        settingsStore.SaveSourceLanguage(savedSourceLanguage);
-                    }
-
-                    if (updatedSettings.TryGetSetting<string>(TargetLanguageSettingKey, out var savedTargetLanguage))
-                    {
-                        settingsStore.SaveTargetLanguage(savedTargetLanguage);
-                    }
-
-                    if (updatedSettings.TryGetSetting<string>(RuntimeLoggingSettingKey, out var runtimeLoggingSelection))
-                    {
-                        var enabled = string.Equals(runtimeLoggingSelection, RuntimeLoggingEnabledValue, StringComparison.OrdinalIgnoreCase);
-                        RuntimeLog.SetEnabled(enabled);
-                    }
-                };
             }
-            else
+
+            var runtimeLoggingSetting = new ToggleSetting(
+                RuntimeLoggingSettingKey,
+                runtimeLoggingEnabled)
             {
-                settings.SettingsChanged += (_, updatedSettings) =>
+                Label = "Log runtime diagnostics"
+            };
+
+            settings.Add(runtimeLoggingSetting);
+
+            settings.SettingsChanged += (_, updatedSettings) =>
+            {
+                if (updatedSettings.TryGetSetting<string>(SourceLanguageSettingKey, out var savedSourceLanguage))
                 {
-                    if (updatedSettings.TryGetSetting<string>(RuntimeLoggingSettingKey, out var runtimeLoggingSelection))
-                    {
-                        var enabled = string.Equals(runtimeLoggingSelection, RuntimeLoggingEnabledValue, StringComparison.OrdinalIgnoreCase);
-                        RuntimeLog.SetEnabled(enabled);
-                    }
-                };
-            }
+                    settingsStore.SaveSourceLanguage(savedSourceLanguage);
+                }
+
+                if (updatedSettings.TryGetSetting<string>(TargetLanguageSettingKey, out var savedTargetLanguage))
+                {
+                    settingsStore.SaveTargetLanguage(savedTargetLanguage);
+                }
+
+                if (updatedSettings.TryGetSetting<bool>(RuntimeLoggingSettingKey, out var runtimeLoggingSelection))
+                {
+                    RuntimeLog.SetEnabled(runtimeLoggingSelection);
+                }
+            };
         }
         catch (Exception ex)
         {

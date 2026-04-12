@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2.0] - 2026-04-12
+
+### Fixed
+
+- Converted runtime logging to a checkbox-style toggle.
+- Placed runtime logging after source and target language settings.
+- Removed the runtime logging description text to keep the settings panel compact.
+- Kept the extension Command Palette-only by hiding the Start menu app entry.
+
 ## [1.1.1.0] - 2026-04-12
 
 ### Fixed

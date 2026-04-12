@@ -12,7 +12,7 @@
   <Identity
     Name="lamteteeow.PowerTranslate"
     Publisher="CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2"
-    Version="1.1.1.0" />
+    Version="1.1.2.0" />
 
   <Properties>
     <DisplayName>Power Translate</DisplayName>
@@ -35,6 +35,7 @@
       <uap:VisualElements
         DisplayName="PowerTranslate"
         Description="PowerTranslate"
+        AppListEntry="none"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">

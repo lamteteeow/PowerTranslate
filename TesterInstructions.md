@@ -14,7 +14,7 @@
    - Install from Microsoft Store: <https://apps.microsoft.com/detail/xp89dcgq3k6vld>
    - Ensure Command Palette is enabled in PowerToys
 2. **PowerTranslate package**
-   - Use the x64 package: `PowerTranslateExtension_1.1.1.0_x64.msix`
+   - Use the x64 package: `PowerTranslateExtension_1.1.2.0_x64.msix`
 
 ### DeepL Account
 
@@ -36,21 +36,22 @@ For the sake of testing, a DeepL API key is provided for this submission.
 
 ### Step 2: Install PowerTranslate
 
-1. Import `PowerTranslateExtension_1.1.1.0_x64.cer` to `CurrentUser\\TrustedPeople`.
-2. Open the `PowerTranslateExtension_1.1.1.0_x64.msix` package in File Explorer or run it directly with App Installer.
+1. Import `PowerTranslateExtension_1.1.2.0_x64.cer` to `CurrentUser\\TrustedPeople`.
+2. Open the `PowerTranslateExtension_1.1.2.0_x64.msix` package in File Explorer or run it directly with App Installer.
 3. Approve the certificate prompt if Windows asks for it.
 4. Finish the install wizard.
 
 ### Step 3: Refresh PowerToys
 
-1. Open Command Palette
+1. Open `Command Palette`
 2. Run `Reload Command Palette extensions`
 3. Confirm PowerTranslate appears in the list of available extensions
+4. Do not launch PowerTranslate directly from Start menu; this extension is Command Palette-only by design.
 
 ### Step 4: Configure DeepL
 
-1. Open PowerTranslate from Command Palette
-2. Run `Configure DeepL API key`
+1. Open `Command Palette`
+2. Run `Configure DeepL API key` command (not the `PowerTranslate` app itself)
 3. Paste in the provided or your own DeepL API key
 4. Click `Save`
 5. Translation functionality should be successful with valid API key.
@@ -60,7 +61,7 @@ For the sake of testing, a DeepL API key is provided for this submission.
 
 ### Basic Functionality Test
 
-1. Open Command Palette
+1. Open `Command Palette`
 2. Search for `Translate text` and select
 3. Type in text to be translated
 4. Verify the translated text is returned in the info box

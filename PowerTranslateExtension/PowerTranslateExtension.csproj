@@ -3,8 +3,8 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PowerTranslateExtension</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
+    <AssemblyVersion>1.1.2.0</AssemblyVersion>
+    <FileVersion>1.1.2.0</FileVersion>
 
     <WindowsSdkPackageVersion>10.0.26100.84</WindowsSdkPackageVersion>
     <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
@@ -14,7 +14,7 @@
 
     <AppxPackageIdentityName>lamteteeow.PowerTranslate</AppxPackageIdentityName>
     <AppxPackagePublisher>CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2</AppxPackagePublisher>
-    <AppxPackageVersion>1.1.1.0</AppxPackageVersion>
+    <AppxPackageVersion>1.1.2.0</AppxPackageVersion>
 
     <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
