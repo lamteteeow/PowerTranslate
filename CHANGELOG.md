@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1.0] - 2026-04-12
+
+### Fixed
+
+- Restored color-encoded status feedback in Configure DeepL API settings.
+- Success status now renders in green and error status renders in red again.
+
 ## [1.1.0.0] - 2026-04-12
 
 ### Added

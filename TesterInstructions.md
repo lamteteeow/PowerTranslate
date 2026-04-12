@@ -14,7 +14,7 @@
    - Install from Microsoft Store: <https://apps.microsoft.com/detail/xp89dcgq3k6vld>
    - Ensure Command Palette is enabled in PowerToys
 2. **PowerTranslate package**
-   - Use the x64 package: `PowerTranslateExtension_1.1.0.0_x64.msix`
+   - Use the x64 package: `PowerTranslateExtension_1.1.1.0_x64.msix`
 
 ### DeepL Account
 
@@ -36,8 +36,8 @@ For the sake of testing, a DeepL API key is provided for this submission.
 
 ### Step 2: Install PowerTranslate
 
-1. Import `PowerTranslateExtension_1.1.0.0_x64.cer` to `CurrentUser\\TrustedPeople`.
-2. Open the `PowerTranslateExtension_1.1.0.0_x64.msix` package in File Explorer or run it directly with App Installer.
+1. Import `PowerTranslateExtension_1.1.1.0_x64.cer` to `CurrentUser\\TrustedPeople`.
+2. Open the `PowerTranslateExtension_1.1.1.0_x64.msix` package in File Explorer or run it directly with App Installer.
 3. Approve the certificate prompt if Windows asks for it.
 4. Finish the install wizard.
 

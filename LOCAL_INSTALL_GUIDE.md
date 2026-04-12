@@ -1,4 +1,4 @@
-# Local Installation Guide (PowerTranslate 1.1.0.0)
+# Local Installation Guide (PowerTranslate 1.1.1.0)
 
 ## Goal
 
@@ -12,14 +12,14 @@ Install PowerTranslate on this machine from local build artifacts.
 ## 1) Verify artifacts
 
 ```powershell
-Test-Path .\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.0.0_x64_Test\PowerTranslateExtension_1.1.0.0_x64.cer
-Test-Path .\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.0.0_x64_Test\PowerTranslateExtension_1.1.0.0_x64.msix
+Test-Path .\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.1.0_x64_Test\PowerTranslateExtension_1.1.1.0_x64.cer
+Test-Path .\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.1.0_x64_Test\PowerTranslateExtension_1.1.1.0_x64.msix
 ```
 
 ## 2) Import signing certificate
 
 ```powershell
-Import-Certificate -FilePath ".\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.0.0_x64_Test\PowerTranslateExtension_1.1.0.0_x64.cer" -CertStoreLocation "Cert:\CurrentUser\TrustedPeople"
+Import-Certificate -FilePath ".\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.1.0_x64_Test\PowerTranslateExtension_1.1.1.0_x64.cer" -CertStoreLocation "Cert:\CurrentUser\TrustedPeople"
 ```
 
 ## 3) Close processes that may lock the package
@@ -31,7 +31,7 @@ Get-Process | Where-Object { $_.ProcessName -in @('PowerTranslateExtension','Pow
 ## 4) Install package
 
 ```powershell
-Add-AppxPackage -Path ".\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.0.0_x64_Test\PowerTranslateExtension_1.1.0.0_x64.msix" -ForceUpdateFromAnyVersion
+Add-AppxPackage -Path ".\PowerTranslateExtension\AppPackages\PowerTranslateExtension_1.1.1.0_x64_Test\PowerTranslateExtension_1.1.1.0_x64.msix" -ForceUpdateFromAnyVersion
 ```
 
 ## 5) Verify installation

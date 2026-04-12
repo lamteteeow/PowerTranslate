@@ -145,7 +145,7 @@ See [PRIVACY.md](PRIVACY.md) for the formal policy used for release and store su
 
 ## Development Status
 
-**Status**: Stable v1.1.0.0 release
+**Status**: Stable v1.1.1.0 release
 
 Core translation functionality, language selection, and settings persistence are production-ready. Windows 10/11 support verified.
 

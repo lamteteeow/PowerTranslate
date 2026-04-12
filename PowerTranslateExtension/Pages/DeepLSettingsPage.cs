@@ -11,7 +11,6 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     private readonly LocalSettingsStore _settingsStore = new();
     private readonly DeepLTranslator _translator;
     private readonly ApiKeyForm _form;
-    private readonly MarkdownContent _statusContent = new();
 
     public DeepLSettingsPage()
     {
@@ -24,7 +23,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
 
     public override IContent[] GetContent()
     {
-        return [_statusContent, _form];
+        return [_form];
     }
 
     private CommandResult SaveApiKey(string? rawValue)
@@ -106,9 +105,7 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     {
         var maskedCurrentKey = MaskKey(_settingsStore.GetDeepLApiKey());
         var maskedLine = string.IsNullOrEmpty(maskedCurrentKey) ? "Not set" : maskedCurrentKey;
-        var statusPrefix = isError ? "Error" : "Status";
-        _statusContent.Body =
-            $"Current API key: {maskedLine}\n\n{statusPrefix}: {message}\n\nTip: After setting the API key, reload Command Palette extensions to refresh language choices.";
+        _form.UpdateStatus(maskedLine, message, isError);
         RaiseItemsChanged(1);
     }
 
@@ -129,12 +126,43 @@ internal sealed partial class DeepLSettingsPage : ContentPage
         public ApiKeyForm(DeepLSettingsPage owner)
         {
             _owner = owner;
-            TemplateJson = """
+            DataJson = "{}";
+            UpdateStatus("Not set", "Enter API key and select Save.", isError: false);
+        }
+
+        public void UpdateStatus(string maskedApiKey, string message, bool isError)
+        {
+            var safeKey = JsonEncoded(maskedApiKey);
+            var safeMessage = JsonEncoded(message);
+            var color = isError ? "Attention" : "Good";
+
+            TemplateJson = $$"""
 {
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
     "version": "1.6",
     "body": [
+        {
+            "type": "TextBlock",
+            "text": "Current API key: {{safeKey}}",
+            "wrap": true,
+            "spacing": "None"
+        },
+        {
+            "type": "TextBlock",
+            "text": "{{safeMessage}}",
+            "wrap": true,
+            "color": "{{color}}",
+            "weight": "Bolder",
+            "spacing": "Small"
+        },
+        {
+            "type": "TextBlock",
+            "text": "Tip: After setting the API key, reload Command Palette extensions to refresh language choices.",
+            "wrap": true,
+            "isSubtle": true,
+            "spacing": "Small"
+        },
         {
             "type": "Input.Text",
             "id": "apiKey",
@@ -142,7 +170,8 @@ internal sealed partial class DeepLSettingsPage : ContentPage
             "placeholder": "Paste DeepL API key",
             "style": "password",
             "isMultiline": false,
-            "isRequired": false
+            "isRequired": false,
+            "spacing": "Medium"
         }
     ],
     "actions": [
@@ -159,7 +188,16 @@ internal sealed partial class DeepLSettingsPage : ContentPage
     ]
 }
 """;
-            DataJson = "{}";
+        }
+
+        private static string JsonEncoded(string value)
+        {
+            var input = value ?? string.Empty;
+            return input
+                    .Replace("\\", "\\\\")
+                    .Replace("\"", "\\\"")
+                    .Replace("\r", string.Empty)
+                    .Replace("\n", "\\n");
         }
 
         public override CommandResult SubmitForm(string payload)
