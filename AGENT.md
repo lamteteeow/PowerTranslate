@@ -26,7 +26,6 @@ This file defines the working standards followed for this repository.
   - `LOCAL_INSTALL_GUIDE.md`
   - `StoreSubmissionValidation.md`
   - `TesterInstructions.md`
-  - `TODO.md`
   - `WINGET_PUBLISHING.md`
 - Do not keep the files above on `main`.
 - Before or during merge/release to `main`, remove these internal docs from `main`.
