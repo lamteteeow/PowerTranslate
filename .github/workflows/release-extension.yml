@@ -8,7 +8,7 @@
 # - EXTENSION_NAME with your extension name (e.g., CmdPalMyExtension)
 # - FOLDER_NAME with your project folder name (e.g., CmdPalMyExtension)
 
-name: CmdPal Extension - Build EXE Installer
+name: PowerTranslate - Build EXE Installer
 
 on:
   workflow_dispatch:
@@ -26,10 +26,10 @@ on:
 
 # Global constants: UPDATE THESE, example; DISPLAY_NAME: ${{ vars.DISPLAY_NAME || 'CmdPal Name' }}
 env:
-  DISPLAY_NAME: ${{ vars.DISPLAY_NAME || 'DISPLAY_NAME' }}
-  EXTENSION_NAME: ${{ vars.EXTENSION_NAME || 'EXTENSION_NAME' }}
-  FOLDER_NAME: ${{ vars.FOLDER_NAME || 'FOLDER_NAME' }}
-  GITHUB_REPO_URL: ${{ vars.GITHUB_REPO_URL || 'GITHUB_REPO_URL' }}
+  DISPLAY_NAME: ${{ vars.DISPLAY_NAME || 'PowerTranslate' }}
+  EXTENSION_NAME: ${{ vars.EXTENSION_NAME || 'PowerTranslateExtension' }}
+  FOLDER_NAME: ${{ vars.FOLDER_NAME || 'PowerTranslateExtension' }}
+  GITHUB_REPO_URL: ${{ vars.GITHUB_REPO_URL || 'https://github.com/lamteteeow/PowerTranslate' }}
 
 
 jobs:
@@ -82,7 +82,7 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.EXTENSION_NAME }}-v${{ steps.version.outputs.VERSION }}
+        tag_name: v${{ steps.version.outputs.VERSION }}
         name: "${{ env.DISPLAY_NAME }} v${{ steps.version.outputs.VERSION }}"
         body: |
           ## 🎯 ${{ env.DISPLAY_NAME }} ${{ steps.version.outputs.VERSION }}
@@ -94,7 +94,7 @@ jobs:
           
           Download the installer for your system architecture:
           
-          - **x64 (Intel/AMD)**: `${{ env.DISPLAY_NAME }}-Setup-${{ steps.version.outputs.VERSION }}-x64.exe`
+          - **x64 (Intel/AMD)**: `${{ env.EXTENSION_NAME }}-Setup-${{ steps.version.outputs.VERSION }}-x64.exe`
           
           1. Download the appropriate installer from the Assets section below
           2. Run the installer with administrator privileges
