@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.3.0] - 2026-04-13
+
+### Fixed
+
+- Copy result now places only the translated DeepL response body on the clipboard.
+
 ## [1.1.2.0] - 2026-04-12
 
 ### Fixed

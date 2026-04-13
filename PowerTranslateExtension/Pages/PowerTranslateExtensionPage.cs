@@ -22,6 +22,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
     private string _searchText = string.Empty;
     private string _resultTitle = string.Empty;
     private string _resultBody = "Type or paste text in the search box. Translation happens automatically after you pause typing.\n\nTip: First configure your DeepL API key, then reload Command Palette extensions.";
+    private string _copyText = string.Empty;
     private int _translationGeneration;
 
     public PowerTranslateExtensionPage()
@@ -47,7 +48,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
 
         var items = new List<IListItem>
         {
-            new ListItem(new CopyTextCommand(_resultBody)
+            new ListItem(new CopyTextCommand(_copyText)
             {
                 Name = "Copy result",
                 Result = CommandResult.ShowToast(new ToastArgs
@@ -116,6 +117,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
         {
             _resultTitle = string.Empty;
             _resultBody = "Type or paste text in the search box. Translation happens automatically after you pause typing.\n\nTip: First configure your DeepL API key, then reload Command Palette extensions.";
+            _copyText = string.Empty;
             RaiseItemsChanged(1);
             return;
         }
@@ -139,6 +141,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
 
             _resultTitle = string.Empty;
             _resultBody = "Translating...";
+            _copyText = string.Empty;
             RaiseItemsChanged(1);
 
             var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
@@ -155,10 +158,12 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
             if (result.IsSuccess && !string.IsNullOrWhiteSpace(result.SourceLanguage) && !string.IsNullOrWhiteSpace(result.TargetLanguage))
             {
                 _resultBody = $"{result.SourceLanguage} -> {result.TargetLanguage}\n{result.Message}";
+                _copyText = result.Message;
             }
             else
             {
                 _resultBody = result.Message;
+                _copyText = result.Message;
             }
             RaiseItemsChanged(1);
         }
@@ -174,6 +179,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
 
             _resultTitle = string.Empty;
             _resultBody = ex.Message;
+            _copyText = ex.Message;
             RaiseItemsChanged(1);
         }
     }
