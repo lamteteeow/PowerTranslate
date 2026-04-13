@@ -28,7 +28,7 @@ _Coming soon_
 
 ### From Microsoft Store (Recommended)
 
-_Coming soon_
+Install from Microsoft Store: [PowerTranslate](https://apps.microsoft.com/detail/9PD2C31NX7Z8)
 
 ### Manual Installation (Release package)
 
