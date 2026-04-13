@@ -67,10 +67,9 @@ jobs:
         Write-Host "Using version: $version"
       shell: pwsh
     
-    - name: Build EXE installers (x64 and ARM64)
+    - name: Build EXE installer (x64)
       run: |
-        Set-Location "${{ env.FOLDER_NAME }}/${{ env.FOLDER_NAME }}"
-        .\build-exe.ps1 -Version "${{ steps.version.outputs.VERSION }}" -Platforms @("x64", "arm64")
+        .\scripts\build-exe.ps1 -Version "${{ steps.version.outputs.VERSION }}" -Platforms @("x64")
       shell: pwsh
     
     - name: Upload x64 installer artifact
@@ -80,13 +79,6 @@ jobs:
         path: ${{ env.FOLDER_NAME }}/bin/Release/installer/*-x64.exe
         if-no-files-found: error
 
-    - name: Upload ARM64 installer artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.EXTENSION_NAME }}-arm64-installer
-        path: ${{ env.FOLDER_NAME }}/bin/Release/installer/*-arm64.exe
-        if-no-files-found: warn
-    
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
@@ -103,7 +95,6 @@ jobs:
           Download the installer for your system architecture:
           
           - **x64 (Intel/AMD)**: `${{ env.DISPLAY_NAME }}-Setup-${{ steps.version.outputs.VERSION }}-x64.exe`
-          - **ARM64 (Windows on ARM)**: `${{ env.DISPLAY_NAME }}-Setup-${{ steps.version.outputs.VERSION }}-arm64.exe`
           
           1. Download the appropriate installer from the Assets section below
           2. Run the installer with administrator privileges
