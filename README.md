@@ -26,7 +26,7 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 _Coming soon_
 
-[![Install with WinGet](https://img.shields.io/badge/Install%20with-WinGet-2C71D5?style=for-the-badge&logo=windows-terminal&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
+[![Install with WinGet](https://img.shields.io/badge/Install%20with-WinGet-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
 
 ### From Microsoft Store (Recommended)
 
