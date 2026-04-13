@@ -29,21 +29,17 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 [![Install with WinGet](https://img.shields.io/badge/WinGet-lamteteeow.PowerTranslate-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
 
-```bash
+```powershell
 winget install -e --id lamteteeow.PowerTranslate
 ```
 
 ### Manual Installation (Installer)
-
-> **Important**: Use the installer from GitHub Releases, not a local build path.
 
 1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest).
 2. In **Assets**, download the x64 installer named `PowerTranslateExtension-Setup-<version>-x64.exe`.
 3. Run the installer as Administrator.
 
 ### Manual Installation (Release package)
-
-> **Important**: Windows 10 S is not supported.
 
 1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest) and download the signed Release package assets.
 2. Install or update [PowerToys from GitHub](https://github.com/microsoft/PowerToys) and make sure [Command Palette](https://github.com/microsoft/PowerToys#-utilities) is enabled.
@@ -110,9 +106,9 @@ After installation, use the "Configure DeepL API key" command in the palette to:
 - Try a different language pair to isolate the issue
 
 **Settings not persisting?**
-- Settings are cached in: `C:\Users\[User]\AppData\Local\Packages\PowerTranslateExtension_8wekyb3d8bbwe\LocalCache\Local\PowerTranslateExtension\`
+- Settings are cached in: `C:\Users\[User]\AppData\Local\PowerTranslateExtension\`
 - Verify folder exists and is accessible
-- Clear cache files if corrupted: `deepl.key`, `source-language.txt`, `target-language.txt`
+- Clear cache files if corrupted: `deepl.key`, `source-language.txt`, `target-language.txt`, `runtime-logging.enabled`
 
 **API key not saving?**
 - Ensure API key is not empty
