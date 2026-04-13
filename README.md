@@ -29,7 +29,7 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 [![Install with WinGet](https://img.shields.io/badge/WinGet-lamteteeow.PowerTranslate-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
 
-```bash
+```powershell
 winget install -e --id lamteteeow.PowerTranslate
 ```
 
@@ -110,9 +110,9 @@ After installation, use the "Configure DeepL API key" command in the palette to:
 - Try a different language pair to isolate the issue
 
 **Settings not persisting?**
-- Settings are cached in: `C:\Users\[User]\AppData\Local\Packages\PowerTranslateExtension_8wekyb3d8bbwe\LocalCache\Local\PowerTranslateExtension\`
+- Settings are cached in: `C:\Users\[User]\AppData\Local\PowerTranslateExtension\`
 - Verify folder exists and is accessible
-- Clear cache files if corrupted: `deepl.key`, `source-language.txt`, `target-language.txt`
+- Clear cache files if corrupted: `deepl.key`, `source-language.txt`, `target-language.txt`, `runtime-logging.enabled`
 
 **API key not saving?**
 - Ensure API key is not empty
