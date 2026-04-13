@@ -17,7 +17,8 @@
     <AppxPackageVersion>1.1.3.0</AppxPackageVersion>
 
     <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
-    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <!-- <PublishProfile>win-$(Platform).pubxml</PublishProfile> -->
+    <WindowsPackageType>None</WindowsPackageType>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>

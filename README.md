@@ -22,13 +22,31 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 ## Installation
 
-### From Winget (Recommended)
+### From Microsoft Store
 
-_Coming soon_
+[![Get it from Microsoft](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9PD2C31NX7Z8)
 
-### From Microsoft Store (Recommended)
+[![Install with WinGet](https://img.shields.io/badge/WinGet-lamteteeow.PowerTranslate-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
 
-_Coming soon_
+### From Winget
+
+```bash
+winget install -e --id lamteteeow.PowerTranslate
+```
+
+### Manual Installation (Installer)
+
+> **Important**: Use the installer from GitHub Releases, not a local build path.
+
+1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest).
+2. In **Assets**, download the x64 installer named `PowerTranslateExtension-Setup-<version>-x64.exe`.
+3. Run the installer as Administrator.
+
+Direct asset URL pattern:
+
+```text
+https://github.com/lamteteeow/PowerTranslate/releases/download/<tag>/PowerTranslateExtension-Setup-<version>-x64.exe
+```
 
 ### Manual Installation (Release package)
 
@@ -42,20 +60,20 @@ _Coming soon_
  Import-Certificate -FilePath ".\\<downloaded-package>.cer" -CertStoreLocation "Cert:\\CurrentUser\\TrustedPeople"
  ```
 
-1. Install the package in PowerShell:
+4. Install the package in PowerShell:
 
  ```powershell
  Add-AppxPackage -Path ".\\<downloaded-package>.msix" -ForceUpdateFromAnyVersion
  ```
 
-1. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
+5. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
 
 > **Behavior by design**: PowerTranslate is Command Palette-only and is hidden from the Start menu app list.
 
 ## How It Works
 
 1. Open PowerToys Command Palette
-2. Type "Translate" to access translation commands
+2. Type `Translate` to access translation commands
 3. Configure your DeepL API key (one-time setup)
 4. Select or leave source language as AUTO for automatic detection
 5. Choose target language
@@ -89,7 +107,7 @@ After installation, use the "Configure DeepL API key" command in the palette to:
 ## Troubleshooting
 
 **Languages not loading?**
-- Verify your DeepL API key is valid: use "Configure DeepL API key" command
+- Verify your DeepL API key is valid: use `Configure DeepL API key` command
 - Check your internet connection
 - Ensure you've reloaded Command Palette extensions after saving API key
 
@@ -144,18 +162,6 @@ See [PRIVACY.md](PRIVACY.md) for the formal policy used for release and store su
 - No personal data collected or stored
 - No third-party tracking
 - Users have full control over API key and language settings
-
-## Development Status
-
-**Status**: Stable v1.1.2.0 release
-
-Core translation functionality, language selection, and settings persistence are production-ready. Windows 10/11 support verified.
-
-### Architecture Validation
-
-- **x64 (Windows host)**: Build, package, install, and extension startup verified.
-- **ARM64 support**: Not targeted in this release.
-- **Windows 10 S support**: Not supported in this release.
 
 ## Contributing
 
