@@ -24,7 +24,7 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 ### From Winget (Recommended)
 
-_Coming soon_
+See [WINGET_PUBLISHING.md](WINGET_PUBLISHING.md) for first-time submission and update workflow.
 
 ### From Microsoft Store (Recommended)
 
