@@ -30,6 +30,8 @@ _Coming soon_
 
 Install from Microsoft Store: [PowerTranslate](https://apps.microsoft.com/detail/9PD2C31NX7Z8)
 
+[![Get it from Microsoft](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9PD2C31NX7Z8)
+
 ### Manual Installation (Release package)
 
 > **Important**: Windows 10 S is not supported.
