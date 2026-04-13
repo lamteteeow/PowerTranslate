@@ -17,8 +17,7 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 - **Command Palette**: Enabled inside PowerToys; see the [Command Palette section in the PowerToys GitHub repo](https://github.com/microsoft/PowerToys#-utilities)
 - **.NET**: .NET 9.0 (included in packaged app)
 - **DeepL API Key**: Free or paid account at [deepl.com](https://www.deepl.com/docs-api/accessing-the-api)
-- **Architecture**: x64 (AMD64) only
-- **Windows 10 S**: Not supported (desktop full-trust extension model)
+- **Architecture**: x64 (AMD64) Desktop only
 
 ## Installation
 
@@ -26,9 +25,9 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 [![Get it from Microsoft](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9PD2C31NX7Z8)
 
-[![Install with WinGet](https://img.shields.io/badge/WinGet-lamteteeow.PowerTranslate-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
-
 ### From Winget
+
+[![Install with WinGet](https://img.shields.io/badge/WinGet-lamteteeow.PowerTranslate-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
 
 ```bash
 winget install -e --id lamteteeow.PowerTranslate
@@ -41,12 +40,6 @@ winget install -e --id lamteteeow.PowerTranslate
 1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest).
 2. In **Assets**, download the x64 installer named `PowerTranslateExtension-Setup-<version>-x64.exe`.
 3. Run the installer as Administrator.
-
-Direct asset URL pattern:
-
-```text
-https://github.com/lamteteeow/PowerTranslate/releases/download/<tag>/PowerTranslateExtension-Setup-<version>-x64.exe
-```
 
 ### Manual Installation (Release package)
 
