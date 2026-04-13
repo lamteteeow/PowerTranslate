@@ -25,9 +25,9 @@ This file defines the working standards followed for this repository.
 - Keep these files on `dev` and `local-docs-private` only:
   - `StoreSubmissionValidation.md`
   - `TesterInstructions.md`
+  - `WINGET_PUBLISHING.md`
 - Keep these files on `local-docs-private` only:
   - `local_guide_documentation.md`
-  - `WINGET_PUBLISHING.md`
 - Do not keep the files above on `main`.
 - Do not keep local-only files above on `dev`.
 
