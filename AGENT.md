@@ -23,12 +23,13 @@ This file defines the working standards followed for this repository.
 ## Internal Docs Branch Policy
 
 - Keep these files on `dev` and `local-docs-private` only:
-  - `LOCAL_INSTALL_GUIDE.md`
   - `StoreSubmissionValidation.md`
   - `TesterInstructions.md`
+- Keep these files on `local-docs-private` only:
+  - `local_guide_documentation.md`
   - `WINGET_PUBLISHING.md`
 - Do not keep the files above on `main`.
-- Before or during merge/release to `main`, remove these internal docs from `main`.
+- Do not keep local-only files above on `dev`.
 
 ## Commit and PR Naming Convention
 
