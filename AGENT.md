@@ -20,6 +20,17 @@ This file defines the working standards followed for this repository.
 - If local and remote diverge, prefer `git pull --rebase` to keep history linear.
 - After each major completed phase, push to `origin/dev`.
 
+## Internal Docs Branch Policy
+
+- Keep these files on `dev` and `local-docs-private` only:
+  - `LOCAL_INSTALL_GUIDE.md`
+  - `StoreSubmissionValidation.md`
+  - `TesterInstructions.md`
+  - `TODO.md`
+  - `WINGET_PUBLISHING.md`
+- Do not keep the files above on `main`.
+- Before or during merge/release to `main`, remove these internal docs from `main`.
+
 ## Commit and PR Naming Convention
 
 - Use Conventional Commits for commit subjects.
