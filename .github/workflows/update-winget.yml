@@ -72,7 +72,8 @@ jobs:
 
       - name: Update WinGet manifest
         env:
-          GITHUB_TOKEN: ${{ secrets.WINGET_CREATE_TOKEN || secrets.GITHUB_TOKEN }}
+          WINGET_CREATE_TOKEN: ${{ secrets.WINGET_CREATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $version = "${{ steps.release.outputs.VERSION }}"
           $tag = "${{ steps.release.outputs.TAG }}"
@@ -82,10 +83,15 @@ jobs:
           
           Write-Host "Updating WinGet manifest for version $version"
           Write-Host "x64 URL: $x64Url"
+
+          $token = $env:WINGET_CREATE_TOKEN
+          if ([string]::IsNullOrWhiteSpace($token)) {
+            throw "Missing WINGET_CREATE_TOKEN secret. Add a PAT with winget-pkgs submit permissions to repository secrets."
+          }
           
           # Update the manifest for x64 architecture
           .\wingetcreate.exe update ${{ env.PACKAGE_IDENTIFIER }} `
             --version $version `
             --urls "$x64Url|x64" `
-            --token $env:GITHUB_TOKEN `
+            --token $token `
             --submit
