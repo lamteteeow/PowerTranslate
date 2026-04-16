@@ -6,6 +6,7 @@ using Microsoft.CommandPalette.Extensions;
 using Shmuelie.WinRTServer;
 using Shmuelie.WinRTServer.CsWinRT;
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -25,7 +26,7 @@ public class Program
 
         try
         {
-            if (args.Length > 0 && args[0] == "-RegisterProcessAsComServer")
+            if (IsComServerActivation(args))
             {
                 StartupLog.Info("Starting COM server activation.");
 
@@ -57,7 +58,7 @@ public class Program
             }
             else
             {
-                StartupLog.Info("Not launched as extension COM server. Exiting.");
+                StartupLog.Info($"Not launched as extension COM server. Exiting. Args: {string.Join(' ', args)}");
                 Console.WriteLine("Not being launched as a Extension... exiting.");
             }
         }
@@ -78,5 +79,19 @@ public class Program
         {
             // Never fail extension startup due to DPI API availability.
         }
+    }
+
+    private static bool IsComServerActivation(string[] args)
+    {
+        if (args.Length == 0)
+        {
+            return false;
+        }
+
+        return args.Any(static arg =>
+            string.Equals(arg, "-RegisterProcessAsComServer", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(arg, "/RegisterProcessAsComServer", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(arg, "-Embedding", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(arg, "/Embedding", StringComparison.OrdinalIgnoreCase));
     }
 }

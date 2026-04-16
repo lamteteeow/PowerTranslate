@@ -33,6 +33,50 @@ Source: "bin\Release\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion 
 [Icons]
 Name: "{group}\{#DisplayName}"; Filename: "{app}\{#ExtensionName}.exe"
 
-[Registry]
-Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{{{#ExtensionClsid}}}"; ValueData: "{#ExtensionName}"
-Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{{{#ExtensionClsid}}}\LocalServer32"; ValueData: "{app}\{#ExtensionName}.exe -RegisterProcessAsComServer"
+[Code]
+function ClsidKey: string;
+begin
+	Result := 'SOFTWARE\\Classes\\CLSID\\{' + '{#ExtensionClsid}' + '}';
+end;
+
+function ClsidKeyMalformed: string;
+begin
+	Result := 'SOFTWARE\\Classes\\CLSID\\{' + '{#ExtensionClsid}' + '}}';
+end;
+
+function ComServerCommand: string;
+begin
+	Result := '"' + ExpandConstant('{app}\\{#ExtensionName}.exe') + '" -RegisterProcessAsComServer';
+end;
+
+procedure RegisterComServer(RootKey: Integer);
+begin
+	RegWriteStringValue(RootKey, ClsidKey, '', '{#ExtensionName}');
+	RegWriteStringValue(RootKey, ClsidKey + '\\LocalServer32', '', ComServerCommand);
+end;
+
+procedure CleanupMalformedKeys;
+begin
+	RegDeleteKeyIncludingSubkeys(HKLM, ClsidKeyMalformed);
+	RegDeleteKeyIncludingSubkeys(HKCU, ClsidKeyMalformed);
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+	if CurStep = ssPostInstall then
+	begin
+		CleanupMalformedKeys;
+		RegisterComServer(HKLM);
+		RegisterComServer(HKCU);
+	end;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+	if CurUninstallStep = usUninstall then
+	begin
+		RegDeleteKeyIncludingSubkeys(HKCU, ClsidKey);
+		RegDeleteKeyIncludingSubkeys(HKLM, ClsidKey);
+		CleanupMalformedKeys;
+	end;
+end;

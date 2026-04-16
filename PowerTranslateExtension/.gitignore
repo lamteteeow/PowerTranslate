@@ -1,0 +1,3 @@
+# Ignore everything in AppPackages except the guardrail README
+AppPackages/*
+!AppPackages/README_GUARDRAIL.md

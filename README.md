@@ -33,31 +33,9 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 winget install -e --id lamteteeow.PowerTranslate
 ```
 
-### Manual Installation (Installer)
+### Manual from MSIX installer
 
-1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest).
-2. In **Assets**, download the x64 installer named `PowerTranslateExtension-Setup-<version>-x64.exe`.
-3. Run the installer as Administrator.
-
-### Manual Installation (Release package)
-
-1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest) and download the signed Release package assets.
-2. Install or update [PowerToys from GitHub](https://github.com/microsoft/PowerToys) and make sure [Command Palette](https://github.com/microsoft/PowerToys#-utilities) is enabled.
-3. Import the certificate in PowerShell:
-
- ```powershell
- Import-Certificate -FilePath ".\\<downloaded-package>.cer" -CertStoreLocation "Cert:\\CurrentUser\\TrustedPeople"
- ```
-
-4. Install the package in PowerShell:
-
- ```powershell
- Add-AppxPackage -Path ".\\<downloaded-package>.msix" -ForceUpdateFromAnyVersion
- ```
-
-5. Open PowerToys Command Palette and run `Reload Command Palette extensions`.
-
-> **Behavior by design**: PowerTranslate is Command Palette-only and is hidden from the Start menu app list.
+Download and install the certified `PowerTranslateExtension_<version>_x64.msix` from the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest).
 
 ## How It Works
 
@@ -86,12 +64,12 @@ winget install -e --id lamteteeow.PowerTranslate
 
 ## Configuration
 
-After installation, use the "Configure DeepL API key" command in the palette to:
+After installation, use the `Configure DeepL API key` command in the palette to:
 - Enter your DeepL API key (get one at [deepl.com](https://www.deepl.com/docs-api/accessing-the-api))
 - Validate connectivity to the DeepL API
 - Save encrypted key for future use
 
-> **Note**: After setting the API key, reload Command Palette extensions to refresh language choices. Use `Ctrl+Shift+P` and search "Reload Command Palette extensions".
+> **Note**: After setting the API key, reload Command Palette extensions to refresh language choices. Use `Ctrl+Shift+P` (by default) and search `Reload Command Palette extensions`.
 
 ## Troubleshooting
 
@@ -113,7 +91,7 @@ After installation, use the "Configure DeepL API key" command in the palette to:
 **API key not saving?**
 - Ensure API key is not empty
 - Verify Windows can encrypt data (Windows Data Protection API must be available)
-- Run "Configure DeepL API key" command and try again
+- Run `Configure DeepL API key` command and try again
 
 **Install blocked with same-version content mismatch (`0x80073CFB`)?**
 - This happens when a package with the same identity/version was built from different contents (for example Debug vs Release).
