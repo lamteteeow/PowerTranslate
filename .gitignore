@@ -12,6 +12,7 @@
 *.env
 .local/
 [Tt]odo.md
+*.mp4
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -27,7 +27,7 @@ PowerTranslate brings fast, accurate translation directly into your PowerToys Co
 
 ### From Winget
 
-[![Install with WinGet](https://img.shields.io/badge/WinGet-lamteteeow.PowerTranslate-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://learn.microsoft.com/windows/package-manager/winget/)
+[![Install with WinGet](https://img.shields.io/badge/WinGet-lamteteeow.PowerTranslate-2C71D5?style=flat&logo=hackthebox&logoColor=white)](https://winstall.app/apps/lamteteeow.PowerTranslate)
 
 ```powershell
 winget install -e --id lamteteeow.PowerTranslate
