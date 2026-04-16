@@ -96,6 +96,7 @@ jobs:
             Write-Host "Submitting local manifests from: $manifestDir"
             .\wingetcreate.exe submit $manifestDir `
               --token $token `
+              --no-open `
               --prtitle "Update ${{ env.PACKAGE_IDENTIFIER }} to $version (mandatory update)"
             exit $LASTEXITCODE
           }
@@ -106,4 +107,5 @@ jobs:
             --urls "$x64Url|x64" `
             --release-notes-url $releaseNotesUrl `
             --token $token `
+            --no-open `
             --submit
