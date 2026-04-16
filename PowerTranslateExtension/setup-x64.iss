@@ -4,14 +4,17 @@
 #define DisplayName "PowerTranslate"
 #define DeveloperName "lamteteeow"
 #define ExtensionClsid "fd4bd242-c3f8-47bb-89f0-5a6f7f14aecf"
-#define AppVersion "1.1.3.0"
+#define AppVersion "1.1.4.0"
 
 
 [Setup]
 AppId={{{#ExtensionClsid}}}
 AppName={#DisplayName}
+AppVerName={#DisplayName}
 AppVersion={#AppVersion}
 AppPublisher={#DeveloperName}
+SetupIconFile=Assets\PowerTranslateLogo.ico
+UninstallDisplayIcon={app}\{#ExtensionName}.exe,0
 DefaultDirName={autopf}\{#ExtensionName}
 OutputDir=bin\Release\installer
 OutputBaseFilename={#ExtensionName}-Setup-{#AppVersion}-x64

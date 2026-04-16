@@ -12,7 +12,7 @@
   <Identity
     Name="lamteteeow.PowerTranslate"
     Publisher="CN=4B22C9A6-04CC-4DE0-A7BE-ED219F6F2DA2"
-    Version="1.1.3.0" />
+    Version="1.1.4.0" />
 
   <Properties>
     <DisplayName>Power Translate</DisplayName>

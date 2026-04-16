@@ -35,15 +35,11 @@ winget install -e --id lamteteeow.PowerTranslate
 
 ### Manual Installation (Installer)
 
-> **Important**: Use the installer from GitHub Releases, not a local build path.
-
 1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest).
 2. In **Assets**, download the x64 installer named `PowerTranslateExtension-Setup-<version>-x64.exe`.
 3. Run the installer as Administrator.
 
 ### Manual Installation (Release package)
-
-> **Important**: Windows 10 S is not supported.
 
 1. Open the [latest GitHub release](https://github.com/lamteteeow/PowerTranslate/releases/latest) and download the signed Release package assets.
 2. Install or update [PowerToys from GitHub](https://github.com/microsoft/PowerToys) and make sure [Command Palette](https://github.com/microsoft/PowerToys#-utilities) is enabled.

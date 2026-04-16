@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.4.0] - 2026-04-16
+
+### Changed
+
+- Updated installer metadata and icon wiring so ARP/Settings displays name and logo consistently for the Inno/Winget package.
+- Regenerated release packaging with aligned version `1.1.4.0` across project, MSIX manifest, and setup scripts.
+
+### Fixed
+
+- Resolved Release MSIX packaging script configuration to support trimmed self-contained x64 builds in the deploy flow.
+
 ## [1.1.3.0] - 2026-04-13
 
 ### Fixed
