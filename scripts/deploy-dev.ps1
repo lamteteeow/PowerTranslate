@@ -54,7 +54,7 @@ if ([string]::IsNullOrWhiteSpace($packageIdentityName)) {
 
 Write-Host "Publishing $Configuration|$Platform ..." -ForegroundColor Cyan
 Write-Host "Using certificate thumbprint $CertificateThumbprint for MSIX signing." -ForegroundColor Cyan
-dotnet msbuild $projectPath /restore /p:Configuration=$Configuration /p:Platform=$Platform /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint=$CertificateThumbprint /v:m
+dotnet msbuild $projectPath /restore /p:Configuration=$Configuration /p:Platform=$Platform /p:RuntimeIdentifier=win-$Platform /p:SelfContained=true /p:GenerateAppxPackageOnBuild=true /p:WindowsPackageType=MSIX /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint=$CertificateThumbprint /v:m
 
 if ($LASTEXITCODE -ne 0) {
     throw "Build failed with exit code $LASTEXITCODE."
