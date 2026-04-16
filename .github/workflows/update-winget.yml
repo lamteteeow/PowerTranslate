@@ -78,11 +78,13 @@ jobs:
           $version = "${{ steps.release.outputs.VERSION }}"
           $tag = "${{ steps.release.outputs.TAG }}"
           
-          # URL for x64 installer
-          $x64Url = "https://github.com/${{ env.GITHUB_USER_NAME }}/${{ env.GITHUB_REPO }}/releases/download/$tag/${{ env.EXTENSION_NAME }}-Setup-$version-x64.exe"
+          # URL for x64 MSIX package
+          $x64Url = "https://github.com/${{ env.GITHUB_USER_NAME }}/${{ env.GITHUB_REPO }}/releases/download/$tag/PowerTranslateExtension_${version}_x64.msix"
+          $releaseNotesUrl = "https://github.com/${{ env.GITHUB_USER_NAME }}/${{ env.GITHUB_REPO }}/releases/tag/$tag"
           
           Write-Host "Updating WinGet manifest for version $version"
-          Write-Host "x64 URL: $x64Url"
+          Write-Host "x64 MSIX URL: $x64Url"
+          Write-Host "Release notes URL: $releaseNotesUrl"
 
           $token = $env:WINGET_CREATE_TOKEN
           if ([string]::IsNullOrWhiteSpace($token)) {
@@ -93,5 +95,6 @@ jobs:
           .\wingetcreate.exe update ${{ env.PACKAGE_IDENTIFIER }} `
             --version $version `
             --urls "$x64Url|x64" `
+            --release-notes-url $releaseNotesUrl `
             --token $token `
             --submit
