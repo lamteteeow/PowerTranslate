@@ -77,6 +77,7 @@ jobs:
         run: |
           $version = "${{ steps.release.outputs.VERSION }}"
           $tag = "${{ steps.release.outputs.TAG }}"
+          $manifestDir = "manifests/l/lamteteeow/PowerTranslate/$version"
           
           # URL for x64 MSIX package
           $x64Url = "https://github.com/${{ env.GITHUB_USER_NAME }}/${{ env.GITHUB_REPO }}/releases/download/$tag/PowerTranslateExtension_${version}_x64.msix"
@@ -90,8 +91,17 @@ jobs:
           if ([string]::IsNullOrWhiteSpace($token)) {
             throw "Missing WINGET_CREATE_TOKEN secret. Add a PAT with winget-pkgs submit permissions to repository secrets."
           }
+
+          if (Test-Path $manifestDir) {
+            Write-Host "Submitting local manifests from: $manifestDir"
+            .\wingetcreate.exe submit $manifestDir `
+              --token $token `
+              --replace $version `
+              --prtitle "Update ${{ env.PACKAGE_IDENTIFIER }} to $version (mandatory update)"
+            exit $LASTEXITCODE
+          }
           
-          # Update the manifest for x64 architecture
+          # Fallback: update manifest from release URL when local manifests are unavailable
           .\wingetcreate.exe update ${{ env.PACKAGE_IDENTIFIER }} `
             --version $version `
             --urls "$x64Url|x64" `
