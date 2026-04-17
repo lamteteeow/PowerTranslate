@@ -7,7 +7,7 @@ InstallerType: msix
 Installers:
 - Architecture: x64
   InstallerUrl: https://github.com/lamteteeow/PowerTranslate/releases/download/v1.1.4.0/PowerTranslateExtension_1.1.4.0_x64.msix
-  InstallerSha256: D799F515D1843A753FB11191F9F9393B99F0F4A8AAC4F0A3B861700BBF18DDB0
+  InstallerSha256: ED27B6459766EC8BE519EE6DE250723353D7014B2EDB80BA3334DBA4DB55DB7B
   PackageFamilyName: lamteteeow.PowerTranslate_8x1cxbv97rw5g
 ManifestType: installer
 ManifestVersion: 1.12.0
