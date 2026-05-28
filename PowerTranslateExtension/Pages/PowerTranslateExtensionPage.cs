@@ -46,6 +46,24 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
         var sourceLanguage = LocalSettingsStore.GetSourceLanguage();
         var targetLanguage = LocalSettingsStore.GetTargetLanguage();
 
+        var swapCommand = new SwapLanguagesCommand(
+            _settingsStore,
+            () => _copyText,
+            text =>
+            {
+                _searchText = text;
+                SearchText = text;
+                OnPropertyChanged(nameof(SearchText));
+                StartTranslation(text, TimeSpan.Zero);
+            },
+            RefreshTranslation);
+
+        var swapContextItem = new CommandContextItem(swapCommand)
+        {
+            Title = "Swap languages",
+            Icon = new IconInfo("\uE8AB"),
+        };
+
         var items = new List<IListItem>
         {
             new ListItem(new CopyTextCommand(_copyText)
@@ -61,6 +79,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
                 Title = "Copy result",
                 Subtitle = string.Empty,
                 Details = BuildResultDetails(),
+                MoreCommands = [swapContextItem],
             }
         };
 
@@ -71,6 +90,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
                 Title = "Change target language",
                 Subtitle = GetLanguageDisplayName(languageChoices.TargetChoices, targetLanguage),
                 Details = BuildResultDetails(),
+                MoreCommands = [swapContextItem],
             });
         }
 
@@ -81,6 +101,7 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
                 Title = "Change source language",
                 Subtitle = GetLanguageDisplayName(languageChoices.SourceChoices, sourceLanguage),
                 Details = BuildResultDetails(),
+                MoreCommands = [swapContextItem],
             });
         }
 
@@ -316,6 +337,45 @@ internal sealed partial class PowerTranslateExtensionPage : DynamicListPage
                 refreshTranslation();
                 return CommandResult.GoBack();
             }
+        }
+    }
+
+    private sealed partial class SwapLanguagesCommand(
+        LocalSettingsStore settingsStore,
+        Func<string> getCurrentResultText,
+        Action<string> swapText,
+        Action refreshTranslation) : InvokableCommand
+    {
+        public override string Name { get; set; } = "Swap languages";
+
+        public override CommandResult Invoke()
+        {
+            var source = LocalSettingsStore.GetSourceLanguage();
+            var target = LocalSettingsStore.GetTargetLanguage();
+
+            var newSource = target;
+            var newTarget = string.Equals(source, "AUTO", StringComparison.OrdinalIgnoreCase)
+                ? "EN"
+                : source;
+
+            settingsStore.SaveSourceLanguage(newSource);
+            settingsStore.SaveTargetLanguage(newTarget);
+
+            var resultText = getCurrentResultText();
+            if (!string.IsNullOrWhiteSpace(resultText))
+            {
+                swapText(resultText);
+            }
+            else
+            {
+                refreshTranslation();
+            }
+
+            return CommandResult.ShowToast(new ToastArgs
+            {
+                Message = $"Swapped: {newSource} → {newTarget}",
+                Result = CommandResult.KeepOpen(),
+            });
         }
     }
 }
