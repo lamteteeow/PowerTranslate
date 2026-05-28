@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0.0] - 2026-05-28 (pre-release)
+
+### Added
+
+- Swap source/target languages via Ctrl+Enter (MoreCommands context menu).
+
+### Changed
+
+- Bumped version to 1.2.0.0.
+
 ## [1.1.4.0] - 2026-04-16
 
 ### Changed
